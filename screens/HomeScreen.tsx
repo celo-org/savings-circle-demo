@@ -5,7 +5,6 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from "react-native";
@@ -13,15 +12,43 @@ import { connect } from "react-redux";
 import { MonoText } from "../components/StyledText";
 import { statement } from "@babel/template";
 import { RootState } from "../store";
-import { hasAccount, setAccount } from "../account";
+import { hasAccount, setAccount, logout } from "../account";
 import { Linking } from "expo";
+import { listenToAccount, requestAccountAddress, listenToSignedTx } from "../dappkit";
+import { sendAddCircleTx, CircleInfo } from "../savingscircle";
+import { ListItem, Left, Body, Right, List, Text, Button } from "native-base";
+class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
-class HomeScreen extends React.Component {
+  static navigationOptions = (_any) => {
+    return {
+      title: "Savings Circle"
+    };
+  };
+
   componentDidMount() {
-    Linking.addEventListener('url', ({url}) => {
-      const { path, queryParams } = Linking.parse(url)
-      this.props.setAccount(queryParams.account)
-    })
+    listenToAccount(this.props.setAccount)
+    listenToSignedTx(this.props.sendAddCircleTx)
+  }
+
+  handleNewCirclePress = () => {
+    this.props.navigation.navigate('NewCircle')
+  }
+
+  renderCircleList = () => {
+    return this.props.circles.map((circle) => (
+      <ListItem>
+        <Left></Left>
+        <Body>
+          <Text>{ circle.name }</Text>
+          <Text note> { circle.members.length } members</Text>
+        </Body>
+        <Right></Right>
+      </ListItem>
+    ))
+  }
+
+  handleLogout = () => {
+    this.props.logout()
   }
   render() {
 
@@ -50,15 +77,41 @@ class HomeScreen extends React.Component {
           </View>
 
           <View style={styles.helpContainer}>
-              <Text style={styles.helpLinkText}>
+              <Text>
                 Your account address is {this.props.address}
               </Text>
           </View>
 
           <View style={styles.helpContainer}>
-              <Text style={styles.helpLinkText}>
+              <Text>
                 Your stable balance is  {this.props.stableBalance.toString() } cUSD and your gold balance is {this.props.goldBalance.toString()}
               </Text>
+          </View>
+
+          <View style={styles.helpContainer}>
+              <Text>
+                You are part of { this.props.circles.length } savings circles.
+              </Text>
+          </View>
+
+          <List>
+              { this.renderCircleList() }
+          </List>
+
+          <View style={styles.helpContainer}>
+            <TouchableOpacity onPress={this.handleNewCirclePress} style={styles.helpLink}>
+              <Text style={styles.helpLinkText}>
+                Create new savings circle.
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.helpContainer}>
+            <Button danger onPress={this.handleLogout}>
+              <Text style={styles.helpLinkText}>
+                Logout
+              </Text>
+            </Button>
           </View>
         </ScrollView>
       </View>
@@ -106,19 +159,18 @@ const mapStateToProps = (state: RootState) => {
   console.log(state);
   return {
     hasAddress: hasAccount(state),
-    ...state.account
+    ...state.account,
+    circles: state.savingsCircle.circles
   };
 };
 
 const mapDispatchToProps = {
   setAccount,
+  sendAddCircleTx,
+  logout
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
-
-HomeScreen.navigationOptions = {
-  header: null
-};
 
 function DevelopmentModeNotice() {
   if (__DEV__) {
@@ -144,8 +196,7 @@ function DevelopmentModeNotice() {
 }
 
 function handleLearnMorePress() {
-  const url = Linking.makeUrl("/home/test");
-  Linking.openURL(`celo://wallet/account_address?callback=${url}`);
+  requestAccountAddress("/home/test")
 }
 
 function handleHelpPress() {

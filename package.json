@@ -6,7 +6,10 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "generate": "truffle compile && yarn run generate-types && yarn run generate-contracts",
+    "generate-types": "typechain --target truffle './build/**/*.json' && typechain --target web3-1.0.0 --outDir web3-types './build/**/*.json'",
+    "generate-contracts": "yarn run ts-node generate-web3-contracts.ts"
   },
   "jest": {
     "preset": "jest-expo"
@@ -19,14 +22,19 @@
     "@tradle/react-native-http": "^2.0.1",
     "@types/expo": "^32.0.0",
     "@types/react-native": "^0.57.0",
+    "@types/web3": "^1.0.19",
+    "chai": "^4.2.0",
     "crypto-browserify": "^3.12.0",
     "expo": "^34.0.1",
     "expo-asset": "^6.0.0",
     "expo-constants": "6.0.0",
-    "expo-font": "~6.0.0",
+    "expo-font": "~6.0.1",
+    "expo-permissions": "~6.0.0",
     "expo-web-browser": "6.0.0",
     "https-browserify": "^1.0.0",
+    "native-base": "^2.13.4",
     "node-libs-react-native": "^1.0.3",
+    "openzeppelin-solidity": "^2.3.0",
     "os-browserify": "^0.3.0",
     "react": "16.8.3",
     "react-dom": "^16.8.6",
@@ -40,6 +48,9 @@
     "redux": "^4.0.4",
     "redux-persist": "^5.10.0",
     "redux-saga": "^1.0.5",
+    "truffle": "^5.0.30",
+    "truffle-typings": "^1.0.8",
+    "ts-node": "^8.3.0",
     "typescript": "^3.3.0",
     "url": "^0.11.0",
     "vm-browserify": "^1.1.0",
@@ -47,7 +58,8 @@
   },
   "devDependencies": {
     "babel-preset-expo": "^6.0.0",
-    "jest-expo": "^34.0.0"
+    "jest-expo": "^34.0.0",
+    "typechain": "^0.3.19"
   },
   "private": true
 }

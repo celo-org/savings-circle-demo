@@ -1,8 +1,9 @@
 import { RootState } from "./store";
 import { takeLeading, put } from "redux-saga/effects";
-import Web3 from "web3";
 import { GoldToken, StableToken, getErc20Balance } from "@celo/contractkit";
 import BigNumber from "bignumber.js";
+import { web3 } from './root'
+import { Root } from "native-base";
 
 const INITIAL_STATE = {
   address: undefined,
@@ -12,7 +13,8 @@ const INITIAL_STATE = {
 
 export enum actions {
   SET_ACCOUNT = "ACCOUNT/SET_ACCOUNT",
-  SET_BALANCE = "ACCOUNT/SET_BALANCE"
+  SET_BALANCE = "ACCOUNT/SET_BALANCE",
+  LOGOUT = "ACCOUNT/LOGOUT"
 }
 
 export interface SetAccount {
@@ -26,6 +28,11 @@ export interface SetBalance {
   goldBalance: BigNumber
 }
 
+export interface Logout {
+  type: actions.LOGOUT
+}
+
+
 export const setAccount = (address: string): SetAccount => ({
   type: actions.SET_ACCOUNT,
   address
@@ -37,7 +44,9 @@ export const setBalance = (stableBalance: BigNumber, goldBalance: BigNumber): Se
   goldBalance
 })
 
-export type ActionTypes = SetAccount | SetBalance;
+export const logout = () => ({ type: actions.LOGOUT })
+
+export type ActionTypes = SetAccount | SetBalance | Logout ;
 
 export interface State {
   address: string | undefined;
@@ -54,13 +63,14 @@ export const reducer = (
       return { ...state, address: action.address };
     case actions.SET_BALANCE:
       return { ...state, stableBalance: action.stableBalance, goldBalance: action.goldBalance }
+    case actions.LOGOUT:
+      return INITIAL_STATE
     default:
       return state;
   }
 };
 
 async function getBalances(address: string) {
-  const web3 = new Web3("https://alfajores-infura.celo-testnet.org");
   const stableToken = await StableToken(web3);
   const goldToken = await GoldToken(web3);
   return Promise.all([
@@ -85,3 +95,7 @@ export function* saga() {
 export const hasAccount = (state: RootState) => {
   return state.account.address !== undefined;
 };
+
+export const getAccount = (state: RootState) => {
+  return state.account.address
+}
