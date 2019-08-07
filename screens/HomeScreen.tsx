@@ -1,4 +1,3 @@
-import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import {
   Image,
@@ -9,12 +8,9 @@ import {
   View
 } from "react-native";
 import { connect } from "react-redux";
-import { MonoText } from "../components/StyledText";
-import { statement } from "@babel/template";
 import { RootState } from "../store";
 import { hasAccount, setAccount, logout } from "../account";
-import { Linking } from "expo";
-import { listenToAccount, requestAccountAddress, listenToSignedTx } from "../dappkit";
+import { requestAccountAddress, listenToAccount, listenToSignedTx } from "@celo/dappkit";
 import { sendAddCircleTx, CircleInfo } from "../savingscircle";
 import { ListItem, Left, Body, Right, List, Text, Button } from "native-base";
 class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
@@ -36,7 +32,7 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   renderCircleList = () => {
     return this.props.circles.map((circle) => (
-      <ListItem>
+      <ListItem key={circle.name}>
         <Left></Left>
         <Body>
           <Text>{ circle.name }</Text>
