@@ -967,30 +967,14 @@
     web3 "1.0.0-beta.37"
     web3-utils "1.0.0-beta.37"
 
-"@celo/dappkit@0.0.1-j":
-  version "0.0.1-j"
-  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.1-j.tgz#2612ee3f72d446ca9c0d0f5961620bdcde63f0f5"
-  integrity sha512-CzvIoBST32zDSo7huWMRrQsdLgBRNmJ+OkG1xEF81i/78xNP+8rSBQrn/biMsPhLoi3pV2TNwrsq3j0kn878lQ==
+"@celo/dappkit@0.0.1-q":
+  version "0.0.1-q"
+  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.1-q.tgz#bab4b9e6f2dfc3a344fea0493da9df53233f7343"
+  integrity sha512-sudEdjKIyLI3Os7BZw/cnFCam7D/KcYFkcSrwZClsSKNKX2Eq3IBpw/n3ths14ZxOtNi1/UFY8YoEV2CntTYNw==
   dependencies:
-    "@celo/contractkit" "0.0.3"
-    "@celo/utils" "0.0.1-dappkit6"
+    "@celo/utils" "0.0.5-dappkit4"
+    "@celo/walletkit" "0.0.4-dappkit3"
     expo "^34.0.1"
-
-"@celo/utils@0.0.1-dappkit6":
-  version "0.0.1-dappkit6"
-  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.1-dappkit6.tgz#80b0e90d84481b58c725518e4c8280e311e2d3ae"
-  integrity sha512-R6kz5e3ye0gaGk19Y/qv6ji6udh/fO3WMxuVtVomlfQ7WDg4pdc3BUQn+rQFXW7HsLt5qcQyQMU3j/2SMqYsIQ==
-  dependencies:
-    "@umpirsky/country-list" "https://github.com/umpirsky/country-list#05fda51"
-    bignumber.js "^7.2.0"
-    bn.js "4.11.8"
-    country-data "^0.0.31"
-    elliptic "^6.4.1"
-    ethereumjs-util "^5.2.0"
-    futoin-hkdf "^1.0.3"
-    google-libphonenumber "^3.2.1"
-    lodash "^4.17.14"
-    web3-utils "1.0.0-beta.37"
 
 "@celo/utils@0.0.1-delta":
   version "0.0.1-delta"
@@ -1006,6 +990,66 @@
     futoin-hkdf "^1.0.3"
     google-libphonenumber "^3.2.1"
     lodash "^4.17.14"
+    web3-utils "1.0.0-beta.37"
+
+"@celo/utils@0.0.5-dappkit4":
+  version "0.0.5-dappkit4"
+  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.5-dappkit4.tgz#d91121ad993be3714b3aff140aa084b2405ecd25"
+  integrity sha512-+8L13rEwHSBJBaEIJwS4aqaratILQFeOrsQvrq1p31IBGaFFay5lPpSvstDN+6U5P9tuvm7IEjiWfKN0UVtG7w==
+  dependencies:
+    "@umpirsky/country-list" "git://github.com/umpirsky/country-list#05fda51"
+    bignumber.js "^7.2.0"
+    bn.js "4.11.8"
+    country-data "^0.0.31"
+    crypto-js "^3.1.9-1"
+    elliptic "^6.4.1"
+    ethereumjs-util "^5.2.0"
+    futoin-hkdf "^1.0.3"
+    google-libphonenumber "^3.2.1"
+    lodash "^4.17.14"
+    typescript "^3.3.3"
+    web3-utils "1.0.0-beta.37"
+
+"@celo/utils@^0.0.5-dappkit3":
+  version "0.0.5-dappkit3"
+  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.5-dappkit3.tgz#ffc8385875746c475e70ff60c3de8cdf45edbeea"
+  integrity sha512-CT1lWAY19PeN+4nCHDRswiDtpccC2/3FPkdSVrRfhG7zE0KjvejZFTvIal62JHwu5QySVKOwxCiWaFNtgrdcJQ==
+  dependencies:
+    "@umpirsky/country-list" "git://github.com/umpirsky/country-list#05fda51"
+    bignumber.js "^7.2.0"
+    bn.js "4.11.8"
+    country-data "^0.0.31"
+    crypto-js "^3.1.9-1"
+    elliptic "^6.4.1"
+    ethereumjs-util "^5.2.0"
+    futoin-hkdf "^1.0.3"
+    google-libphonenumber "^3.2.1"
+    lodash "^4.17.14"
+    typescript "^3.3.3"
+    web3-utils "1.0.0-beta.37"
+
+"@celo/walletkit@0.0.4-dappkit3":
+  version "0.0.4-dappkit3"
+  resolved "https://registry.yarnpkg.com/@celo/walletkit/-/walletkit-0.0.4-dappkit3.tgz#e9b1cb51f8a38368af665d4896f61812a67e186a"
+  integrity sha512-5I70lA7f63HdSB7IuY2v9PKoAXDIkJf2W3ifZvL2Pp8x4Mp2VGuVbp+IglMxLVsB3TjRHdZBRQdEKGwdc0BS0w==
+  dependencies:
+    "@0x/subproviders" "^4.1.0"
+    "@celo/utils" "^0.0.5-dappkit3"
+    "@google-cloud/storage" "^2.3.3"
+    "@types/jest" "^24.0.13"
+    babel-jest "^24.8.0"
+    bignumber.js "^7.2.0"
+    chalk "^2.4.2"
+    cross-fetch "^3.0.2"
+    eth-lib "^0.2.8"
+    jest "^24.8.0"
+    lodash "^4.17.14"
+    prettier "1.13.5"
+    sleep-promise "^8.0.1"
+    ts-jest "^24.0.0"
+    typechain "git+https://github.com/celo-org/TypeChain.git#832e628"
+    typescript "^3.3.3"
+    web3 "1.0.0-beta.37"
     web3-utils "1.0.0-beta.37"
 
 "@cnakazawa/watch@^1.0.3":
@@ -1698,10 +1742,15 @@
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.12.tgz#45dd1d0638e8c8f153e87d296907659296873916"
   integrity sha512-SOhuU4wNBxhhTHxYaiG5NY4HBhDIDnJF60GU+2LqHAdKKer86//e4yg69aENCtQ04n0ovz+tq2YPME5t5yp4pw==
 
-"@umpirsky/country-list@git+https://github.com/umpirsky/country-list.git#05fda51":
+"@umpirsky/country-list@git://github.com/umpirsky/country-list#05fda51":
   version "1.0.0"
   uid "05fda51cd97b3294e8175ffed06104c44b3c71d7"
-  resolved "git+https://github.com/umpirsky/country-list.git#05fda51cd97b3294e8175ffed06104c44b3c71d7"
+  resolved "git://github.com/umpirsky/country-list#05fda51cd97b3294e8175ffed06104c44b3c71d7"
+
+"@umpirsky/country-list@git://github.com/umpirsky/country-list.git#05fda51":
+  version "1.0.0"
+  uid "05fda51cd97b3294e8175ffed06104c44b3c71d7"
+  resolved "git://github.com/umpirsky/country-list.git#05fda51cd97b3294e8175ffed06104c44b3c71d7"
 
 "@umpirsky/country-list@https://github.com/umpirsky/country-list#05fda51":
   version "1.0.0"
@@ -4061,6 +4110,11 @@ crypto-js@^3.1.4, crypto-js@^3.1.5:
   version "3.1.8"
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.8.tgz#715f070bf6014f2ae992a98b3929258b713f08d5"
   integrity sha1-cV8HC/YBTyrpkqmLOSkli3E/CNU=
+
+crypto-js@^3.1.9-1:
+  version "3.1.9-1"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-3.1.9-1.tgz#fda19e761fc077e01ffbfdc6e9fdfc59e8806cd8"
+  integrity sha1-/aGedh/Ad+Af+/3G6f38WeiAbNg=
 
 crypto-random-string@^1.0.0:
   version "1.0.0"
@@ -12228,6 +12282,15 @@ typechain@^0.3.19:
   version "0.3.19"
   resolved "https://registry.yarnpkg.com/typechain/-/typechain-0.3.19.tgz#5ec1979b2fb79700fc0864e53ea3bfcaff75a2b7"
   integrity sha512-98TN25emSrbPraeBx+Y3ym2NxRw/kMO8qKIIqlice06f2lP6DqhJCOPtaKhytvI4v20L+Nwu57kCOyeFX9eG+g==
+  dependencies:
+    command-line-args "^4.0.7"
+    debug "^3.0.1"
+    fs-extra "^7.0.0"
+    ts-generator "^0.0.8"
+
+"typechain@git+https://github.com/celo-org/TypeChain.git#832e628":
+  version "0.3.11"
+  resolved "git+https://github.com/celo-org/TypeChain.git#832e628fab8f7d9946d46047afe73958d527c262"
   dependencies:
     command-line-args "^4.0.7"
     debug "^3.0.1"

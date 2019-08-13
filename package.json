@@ -17,7 +17,7 @@
   "dependencies": {
     "@babel/runtime": "^7.5.5",
     "@celo/contractkit": "0.0.3",
-    "@celo/dappkit": "0.0.1-j",
+    "@celo/dappkit": "0.0.1-q",
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.3",
     "@react-navigation/web": "^1.0.0-alpha.9",

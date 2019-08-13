@@ -13,6 +13,7 @@ import { hasAccount, setAccount, logout } from "../account";
 import { requestAccountAddress, listenToAccount, listenToSignedTx } from "@celo/dappkit";
 import { sendAddCircleTx, CircleInfo } from "../savingscircle";
 import { ListItem, Left, Body, Right, List, Text, Button } from "native-base";
+import { Linking } from "expo";
 class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   static navigationOptions = (_any) => {
@@ -192,7 +193,11 @@ function DevelopmentModeNotice() {
 }
 
 function handleLearnMorePress() {
-  requestAccountAddress("/home/test")
+  requestAccountAddress({
+    callback: Linking.makeUrl('/home/test'),
+    requestId: 'test',
+    dappName: 'My Dapps'
+  })
 }
 
 function handleHelpPress() {

@@ -6,6 +6,7 @@ import { web3 } from "./root";
 import BigNumber from "bignumber.js";
 import { StableToken } from "@celo/contractkit";
 import { requestTxSig, GasCurrency } from "@celo/dappkit";
+import { Linking } from "expo";
 
 const INITIAL_STATE = {
   circles: []
@@ -121,7 +122,11 @@ async function makeAddCircleTx(
     web3,
     // @ts-ignore
     { from: address, to: contract._address, gasCurrency: GasCurrency.cUSD, tx: tx },
-    "/home/test/"
+    {
+      callback: Linking.makeUrl('/home/test'),
+      requestId: 'test',
+      dappName: 'My Dapps'
+    }
   );
 
   return tx;
