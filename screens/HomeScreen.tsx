@@ -10,7 +10,7 @@ import {
 import { connect } from "react-redux";
 import { RootState } from "../store";
 import { hasAccount, setAccount, logout } from "../account";
-import { requestAccountAddress, listenToAccount, listenToSignedTx } from "@celo/dappkit";
+import { requestAccountAddress, listenToAccount, listenToSignedTxs } from "@celo/dappkit";
 import { sendAddCircleTx, CircleInfo } from "../savingscircle";
 import { ListItem, Left, Body, Right, List, Text, Button } from "native-base";
 import { Linking } from "expo";
@@ -24,7 +24,7 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   componentDidMount() {
     listenToAccount(this.props.setAccount)
-    listenToSignedTx(this.props.sendAddCircleTx)
+    listenToSignedTxs(this.props.sendAddCircleTx)
   }
 
   handleNewCirclePress = () => {

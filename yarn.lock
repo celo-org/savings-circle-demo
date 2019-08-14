@@ -967,12 +967,12 @@
     web3 "1.0.0-beta.37"
     web3-utils "1.0.0-beta.37"
 
-"@celo/dappkit@0.0.1-q":
-  version "0.0.1-q"
-  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.1-q.tgz#bab4b9e6f2dfc3a344fea0493da9df53233f7343"
-  integrity sha512-sudEdjKIyLI3Os7BZw/cnFCam7D/KcYFkcSrwZClsSKNKX2Eq3IBpw/n3ths14ZxOtNi1/UFY8YoEV2CntTYNw==
+"@celo/dappkit@0.0.1-v":
+  version "0.0.1-v"
+  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.1-v.tgz#5287f321c2d1424e15fc762c49378838e7dc8d73"
+  integrity sha512-mx4R25N4Rzg3aKZVyAzxRvGT2ohxMCIb6Cj6u1SvNcvI/s4C74Lywc2zsWINR34lQvM8PwiWz9HQzHPZkFJjVw==
   dependencies:
-    "@celo/utils" "0.0.5-dappkit4"
+    "@celo/utils" "0.0.5-dappkit8"
     "@celo/walletkit" "0.0.4-dappkit3"
     expo "^34.0.1"
 
@@ -992,10 +992,10 @@
     lodash "^4.17.14"
     web3-utils "1.0.0-beta.37"
 
-"@celo/utils@0.0.5-dappkit4":
-  version "0.0.5-dappkit4"
-  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.5-dappkit4.tgz#d91121ad993be3714b3aff140aa084b2405ecd25"
-  integrity sha512-+8L13rEwHSBJBaEIJwS4aqaratILQFeOrsQvrq1p31IBGaFFay5lPpSvstDN+6U5P9tuvm7IEjiWfKN0UVtG7w==
+"@celo/utils@0.0.5-dappkit8":
+  version "0.0.5-dappkit8"
+  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.5-dappkit8.tgz#22d36264af094717634abd291ac9ccf2e9c2f3fe"
+  integrity sha512-A+7OYmbiq0XVQnYP9H5z1iWWFAqoDlSAqA0wcI6GzYzz8kBzaTjP9yaqbBiVsy6gG3Tyl97x6EFYCWYMKMa/RQ==
   dependencies:
     "@umpirsky/country-list" "git://github.com/umpirsky/country-list#05fda51"
     bignumber.js "^7.2.0"

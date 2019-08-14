@@ -27,15 +27,15 @@ export type AddCircle = {
   name: string;
   members: string[];
 };
-export type SendAddCircleTx = { type: actions.ADD_CIRCLE; rawTx: string };
+export type SendAddCircleTx = { type: actions.ADD_CIRCLE; rawTxs: string[] };
 export const addCircle = (name: string, members: string[]) => ({
   type: actions.ADD_CIRCLE,
   name,
   members
 });
-export const sendAddCircleTx = (rawTx: string) => ({
+export const sendAddCircleTx = (rawTxs: string[]) => ({
   type: actions.SEND_ADD_CIRCLE_TX,
-  rawTx
+  rawTxs
 });
 
 export type ActionTypes = FetchedCircles | AddCircle | SendAddCircleTx;
@@ -121,7 +121,7 @@ async function makeAddCircleTx(
   requestTxSig(
     web3,
     // @ts-ignore
-    { from: address, to: contract._address, gasCurrency: GasCurrency.cUSD, tx: tx },
+    [{ from: address, to: contract._address, gasCurrency: GasCurrency.cUSD, tx: tx }],
     {
       callback: Linking.makeUrl('/home/test'),
       requestId: 'test',
@@ -151,9 +151,8 @@ async function sendTx(tx: string) {
 }
 
 export function* sendAddCircleTxSaga(action: SendAddCircleTx) {
-  console.log("got signed ex", action.rawTx);
-
-  yield sendTx(action.rawTx);
+  // @ts-ignore
+  yield Promise.all(action.rawTxs.map(sendTx));
 
   const address = yield select(getAccount);
   const circles = yield getSavingsCircles(address);
