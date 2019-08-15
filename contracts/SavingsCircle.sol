@@ -37,9 +37,9 @@ contract SavingsCircle is ReentrancyGuard, Ownable, Initializable {
     return circleMemberships[user];
   }
 
-  function circleInfo(bytes32 hashedName) public view returns (string memory, address[] memory, address, uint256, uint256) {
+  function circleInfo(bytes32 hashedName) public view returns (string memory, address[] memory, address, uint256, uint256, uint256) {
     Circle storage circle = circles[hashedName];
-    return (circle.name, circle.members, circle.tokenAddress, circle.depositAmount, circle.timestamp);
+    return (circle.name, circle.members, circle.tokenAddress, circle.depositAmount, circle.timestamp, circle.currentIndex);
   }
 
   function addCircle(string calldata name, address[] calldata members, address tokenAddress, uint256 depositAmount) external {

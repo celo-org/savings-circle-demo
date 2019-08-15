@@ -31,15 +31,23 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
     this.props.navigation.navigate('NewCircle')
   }
 
+  handleCirclePress = (circle: string) => {
+    return () => {
+      this.props.navigation.navigate('CirclePage', { circle })
+    }
+  }
+
   renderCircleList = () => {
     return this.props.circles.map((circle) => (
       <ListItem key={circle.name}>
-        <Left></Left>
-        <Body>
-          <Text>{ circle.name }</Text>
-          <Text note> { circle.members.length } members</Text>
-        </Body>
-        <Right></Right>
+        <TouchableOpacity onPress={this.handleCirclePress(circle.name)}>
+          <Left></Left>
+          <Body>
+            <Text>{ circle.name }</Text>
+            <Text note> { Object.keys(circle.members).length } members</Text>
+          </Body>
+          <Right></Right>
+        </TouchableOpacity>
       </ListItem>
     ))
   }

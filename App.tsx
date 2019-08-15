@@ -9,6 +9,8 @@ import { Provider, connect } from 'react-redux';
 import AppNavigator from './navigation/AppNavigator';
 import store from './store'
 
+import {YellowBox} from 'react-native';
+YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream']);
 
 function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);

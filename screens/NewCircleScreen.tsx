@@ -23,9 +23,15 @@ import {
 import { connect } from "react-redux";
 import * as Permissions from "expo-permissions";
 import { addCircle } from "../savingscircle";
+import { getContacts, PhoneNumberMappingEntry } from "../account";
 import { RootState } from "../store";
+import { NavigationScreenProps, NavigationParams } from "react-navigation";
 
-class NewCircleScreen extends React.Component {
+interface OwnProps extends NavigationScreenProps<NavigationParams>{
+  errorMessage?: string;
+}
+
+class NewCircleScreen extends React.Component<OwnProps, {}> {
 
   constructor(props) {
     super(props);
@@ -43,10 +49,20 @@ class NewCircleScreen extends React.Component {
     this.setState({ name });
   };
 
-  addMember = async () => {
+  addMember = (entry: PhoneNumberMappingEntry) => {
+    this.setState(prevState => ({
+      ...prevState,
+      // @ts-ignore
+      members: [...prevState.members, entry.address]
+    }))
+  }
+
+  openAddMember = async () => {
     const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
     if (status == Permissions.PermissionStatus.GRANTED) {
+      this.props.getContacts()
+      this.props.navigation.navigate('AddMember', { addMember: this.addMember })
     }
   };
 
@@ -102,7 +118,7 @@ class NewCircleScreen extends React.Component {
 
             {this.renderMemberList()}
 
-            <Button full light onPress={this.addMember}>
+            <Button full light onPress={this.openAddMember}>
               <Text>Add member</Text>
             </Button>
           </Form>
@@ -122,7 +138,8 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = {
-  addCircle
+  addCircle,
+  getContacts
 }
 export default connect(mapStateToProps, mapDispatchToProps)(NewCircleScreen);
 

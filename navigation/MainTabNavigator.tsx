@@ -5,6 +5,8 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import NewCircleScreen from '../screens/NewCircleScreen';
+import CircleScreen from '../screens/CircleScreen';
+import AddMemberScreen from '../screens/AddMemberScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 
@@ -22,7 +24,15 @@ const HomeStack = createStackNavigator(
     NewCircle: {
       screen: NewCircleScreen,
       path: 'home/new_circle'
-    }
+    },
+    AddMember: {
+      screen: AddMemberScreen,
+      path: 'home/new_circle/add_member'
+    },
+    CirclePage: {
+      screen: CircleScreen,
+      path: 'home/circles/:circle'
+    },
   },
   config
 );
