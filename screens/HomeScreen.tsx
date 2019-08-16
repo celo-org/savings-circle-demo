@@ -12,13 +12,13 @@ import { RootState } from "../store";
 import { hasAccount, setAccount, logout } from "../account";
 import { requestAccountAddress, listenToAccount, listenToSignedTxs } from "@celo/dappkit";
 import { sendAddCircleTx, CircleInfo } from "../savingscircle";
-import { ListItem, Left, Body, Right, List, Text, Button } from "native-base";
+import { Body, Text, Button } from "native-base";
 import { Linking } from "expo";
 class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   static navigationOptions = (_any) => {
     return {
-      title: "Savings Circle"
+      title: "Celo Savings Circle"
     };
   };
 
@@ -38,17 +38,18 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
   }
 
   renderCircleList = () => {
+    console.log(this.props.circles)
     return this.props.circles.map((circle) => (
-      <ListItem key={circle.name}>
-        <TouchableOpacity onPress={this.handleCirclePress(circle.name)}>
-          <Left></Left>
+      <TouchableOpacity onPress={this.handleCirclePress(circle.name)}>
+        <View key={circle.name} style={[styles.circleDisplay]}>
           <Body>
-            <Text>{ circle.name }</Text>
-            <Text note> { Object.keys(circle.members).length } members</Text>
+            <View style={[styles.alignedItem, styles.helpContainer]}>
+              <Text style={styles.circleName}>{ circle.name }</Text>
+              <Text style={styles.circleBalance}>{ circle.totalBalance }</Text>
+            </View>
           </Body>
-          <Right></Right>
-        </TouchableOpacity>
-      </ListItem>
+        </View>
+      </TouchableOpacity>
     ))
   }
 
@@ -56,7 +57,6 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
     this.props.logout()
   }
   render() {
-
     if (this.props.hasAddress) {
       return (
         <View style={styles.container}>
@@ -65,59 +65,35 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
           contentContainerStyle={styles.contentContainer}
         >
           <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/robot-dev.png")
-                  : require("../assets/images/robot-prod.png")
+            <View style={styles.alignedItem}>
+              <View style={[styles.alignedColItem, styles.helpContainer]}>
+              <Text style={[styles.goldBalance]}>
+                {this.props.goldBalance.toString()} cGLD
+              </Text>
+              <Button primary onPress={this.handleNewCirclePress}>
+                <Text>+New Circle</Text>
+              </Button>
+              </View>
+            </View>
+
+          </View>
+
+          <View style={styles.bar}>
+            <View style={styles.alignedItem}>
+              <Text style={styles.merchTitle}>
+                Your Circles:
+              </Text>
+            </View>
+
+            <View style={styles.helpContainerNoPad}>
+              { this.props.circles.length > 0 ?
+                this.renderCircleList() :
+                <Text>You Have No Circles Yet!</Text>
               }
-              style={styles.welcomeImage}
-            />
+            </View>
+
           </View>
 
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
-              Celo
-            </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-              <Text>
-                Your account address is {this.props.address}
-              </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-              <Text>
-                Your stable balance is  {this.props.stableBalance.toString() } cUSD and your gold balance is {this.props.goldBalance.toString()}
-              </Text>
-          </View>
-
-          <View style={styles.helpContainer}>
-              <Text>
-                You are part of { this.props.circles.length } savings circles.
-              </Text>
-          </View>
-
-          <List>
-              { this.renderCircleList() }
-          </List>
-
-          <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={this.handleNewCirclePress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>
-                Create new savings circle.
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.helpContainer}>
-            <Button danger onPress={this.handleLogout}>
-              <Text style={styles.helpLinkText}>
-                Logout
-              </Text>
-            </Button>
-          </View>
         </ScrollView>
       </View>
       )
@@ -130,29 +106,27 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
           contentContainerStyle={styles.contentContainer}
         >
           <View style={styles.welcomeContainer}>
-            <Image
-              source={
-                __DEV__
-                  ? require("../assets/images/robot-dev.png")
-                  : require("../assets/images/robot-prod.png")
-              }
-              style={styles.welcomeImage}
-            />
+            <Image source={require("../assets/images/gold-value.png")} style={styles.welcomeImage} />
           </View>
 
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>
-              Celo
+          <View style={styles.helpContainer}>
+            <Text style={styles.helpHeaderText}>
+              Welcome to the Celo Savings Circle!
             </Text>
           </View>
 
           <View style={styles.helpContainer}>
-            <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
-              <Text style={styles.helpLinkText}>
-                Request address from wallet
-              </Text>
-            </TouchableOpacity>
+            <Text style={styles.helpText}>
+              Savings Circles let you pool funds with your friends to save for large purchases. To get started, we'll need permission to connect this app to your Celo Wallet Account.
+            </Text>
           </View>
+
+          <View style={styles.buttonContainer}>
+            <Button primary onPress={handleHelpPress}>
+              <Text>Connect Wallet Account</Text>
+            </Button>
+          </View>
+
         </ScrollView>
 
       </View>
@@ -225,7 +199,19 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   contentContainer: {
-    paddingTop: 30
+    paddingTop: 15,
+    padding: 15
+  },
+  circleName: {
+    fontSize: 30,
+    marginBottom: 10,
+    paddingRight: 150,
+    fontWeight: "100"
+  },
+  circleBalance: {
+    fontSize: 30,
+    marginBottom: 10,
+    fontWeight: "100"
   },
   welcomeContainer: {
     alignItems: "center",
@@ -233,18 +219,42 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   welcomeImage: {
-    width: 100,
-    height: 80,
+    width: 200,
+    height: 160,
+    resizeMode: "contain",
+    marginTop: 3,
+    marginLeft: -10
+  },
+  homeImage: {
+    width: 75,
+    height: 60,
     resizeMode: "contain",
     marginTop: 3,
     marginLeft: -10
   },
   getStartedContainer: {
     alignItems: "center",
-    marginHorizontal: 50
+    marginHorizontal: 50,
+    paddingBottom: 20
+  },
+  circleDisplay: {
+    backgroundColor: "#f4e3b7",
+    marginBottom: 2,
+    marginTop: 2,
+    borderRadius: 4,
+    justifyContent: "space-between",
+    flexDirection: "row"
   },
   homeScreenFilename: {
     marginVertical: 7
+  },
+  bar: {
+    fontWeight: "bold",
+    alignItems: "stretch",
+    flexDirection: "column"
+  },
+  merchTitle: {
+    fontSize: 28
   },
   codeHighlightText: {
     color: "rgba(96,100,109, 0.8)"
@@ -280,6 +290,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fbfbfb",
     paddingVertical: 20
   },
+  goldBalance: {
+    fontSize: 36,
+    marginBottom: 20,
+    fontWeight: "200",
+    color: '#E5B94C',
+  },
   tabBarInfoText: {
     fontSize: 17,
     color: "rgba(96,100,109, 1)",
@@ -290,10 +306,36 @@ const styles = StyleSheet.create({
   },
   helpContainer: {
     marginTop: 15,
+    padding: 15,
+    alignItems: "center",
+  },
+  helpContainerNoPad: {
+    marginTop: 5,
+    padding: 15,
+    alignItems: "stretch",
+    flexDirection: "column"
+  },
+  alignedItem: {
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  alignedColItem: {
+    flexDirection: "column"
+  },
+  buttonContainer: {
+    marginTop: 45,
     alignItems: "center"
   },
   helpLink: {
     paddingVertical: 15
+  },
+  helpHeaderText: {
+    fontSize: 20,
+    textAlign: "center"
+  },
+  helpText: {
+    fontSize: 14,
+    textAlign: "center"
   },
   helpLinkText: {
     fontSize: 14,

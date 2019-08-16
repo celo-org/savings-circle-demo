@@ -4,13 +4,37 @@ import SavingsCircle from "./web3-contracts/SavingsCircle";
 import { SavingsCircle as SavingsCircleType } from "./web3-types/SavingsCircle";
 import { web3 } from "./root";
 import BigNumber from "bignumber.js";
-import { StableToken, parseFromContractDecimals } from "@celo/contractkit";
+import { GoldToken, parseFromContractDecimals } from "@celo/contractkit";
 import { requestTxSig, GasCurrency, waitForSignedTxs } from "@celo/dappkit";
 import { Linking } from "expo";
 import { zipObject } from "lodash";
 
 const INITIAL_STATE = {
-  circles: []
+  // NOTE: hack to build UI, to be removed
+  circles: [
+    {
+      name: 'Friends',
+      members: { '0x213128931023': 20, '0x213128931024342': 20 },
+      totalBalance: 40,
+      tokenAddress: '0xce10',
+      depositAmount: new BigNumber(5),
+      prettyDepositAmount: '5',
+      timestamp: 8312903291301,
+      circleHash: '12345',
+      withdrawable: true,
+    },
+    {
+      name: 'Family',
+      members: { '0x213128931023': 20 },
+      totalBalance: 20,
+      tokenAddress: '0xce10',
+      depositAmount: new BigNumber(5),
+      prettyDepositAmount: '5',
+      timestamp: 8312903291301,
+      circleHash: '12346',
+      withdrawable: false,
+    }
+  ]
 };
 
 export enum actions {
@@ -104,6 +128,7 @@ type RawCircleInfo = {
 export type CircleInfo = {
   name: string;
   members: { [address: string]: BigNumber };
+  totalBalance: BigNumber;
   tokenAddress: string;
   depositAmount: BigNumber;
   prettyDepositAmount: BigNumber;
@@ -111,6 +136,10 @@ export type CircleInfo = {
   circleHash: string;
   withdrawable: boolean;
 };
+
+function getSum(total, num) {
+  return total + new BigNumber(num.toString())
+}
 
 async function deserializeCircleInfo(
   rawCircleinfo: RawCircleInfo,
@@ -136,6 +165,7 @@ async function deserializeCircleInfo(
       depositAmount,
       contract
     ),
+    totalBalance: balances[1].reduce(getSum, 0),
     timestamp: parseInt(rawCircleinfo[4].toString(), 10),
     circleHash,
     withdrawable
@@ -177,12 +207,12 @@ async function makeAddCircleTx(
   members: string[]
 ) {
   const contract = await SavingsCircle(web3, address);
-  const stableToken = await StableToken(web3, address);
+  const goldToken = await GoldToken(web3, address);
   const depositAmount = web3.utils.toWei("1", "ether").toString();
   const tx = await contract.methods.addCircle(
     name,
     members,
-    stableToken._address,
+    goldToken._address,
     depositAmount
   );
 
@@ -194,7 +224,7 @@ async function makeAddCircleTx(
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        gasCurrency: GasCurrency.cGLD,
         tx: tx
       }
     ],
@@ -253,14 +283,14 @@ async function makeContributeToCircleTx(
       {
         from: address,
         to: stableToken.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        gasCurrency: GasCurrency.cGLD,
         tx: approveTx
       },
       {
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        gasCurrency: GasCurrency.cGLD,
         // @ts-ignore
         tx: tx,
         estimatedGas: 100000
@@ -305,7 +335,7 @@ async function makeWithdrawFromCircleTx(
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        gasCurrency: GasCurrency.cGLD,
         tx: tx
       }
     ],

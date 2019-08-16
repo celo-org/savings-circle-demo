@@ -75,13 +75,13 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
     if (this.state.members.length == 0) {
       return (
         <Item>
-          <Text>No member.</Text>
+          <Text>No members.</Text>
         </Item>
       );
     }
 
     const members = this.state.members.map(memberAddress => (
-      <ListItem avatar key={memberAddress}>
+      <View key={memberAddress}>
         <Left />
         <Body>
           <Text>
@@ -92,7 +92,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
           <Text note> {memberAddress}</Text>
         </Body>
         <Right />
-      </ListItem>
+      </View>
     ));
 
     return <List>{members}</List>;
@@ -100,34 +100,36 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.alignedItem]}>
         <ScrollView>
           {/**
            * Go ahead and delete ExpoLinksView and replace it with your content;
            * we just wanted to provide you with some helpful links.
            */}
           <Form style={styles.form}>
-            <Item stackedLabel>
-              <Label>Name</Label>
-              <Input value={this.state.name} onChangeText={this.changeName} />
-            </Item>
 
-            <Item stackedLabel>
-              <Label>Members</Label>
-            </Item>
+            <View style={styles.nameContainer}>
+              <Input style={styles.nameInput} value={this.state.name} placeholder="Circle Name" onChangeText={this.changeName} />
+            </View>
 
+            <View style={styles.memberTitle}>
+              <Button primary onPress={this.openAddMember}>
+                <Text>+Add member</Text>
+              </Button>
+            </View>
+
+            <View style={styles.memberTitle}>
+              <Text style={styles.memberText}>Members:</Text>
+            </View>
             {this.renderMemberList()}
 
-            <Button full light onPress={this.openAddMember}>
-              <Text>Add member</Text>
-            </Button>
           </Form>
         </ScrollView>
-        <Footer>
+        <View style={styles.memberTitle}>
           <Button primary onPress={this.onAddCircle}>
             <Text> Add Circle </Text>
           </Button>
-        </Footer>
+        </View>
       </View>
     );
   }
@@ -150,11 +152,32 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     backgroundColor: "#fff"
   },
+  memberTitle: {
+    flexDirection: "row",
+    justifyContent: "center",
+    paddingTop: 10,
+    paddingBottom: 20
+  },
+  nameContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#ecce81",
+    margin: 20
+  },
+  memberText: {
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  nameInput: {
+    textAlign: "center"
+  },
   form: {
     flex: 1
   },
-  addButton: {
-    flex: 1,
-    justifyContent: "flex-end"
+  alignedItem: {
+    flexDirection: "column",
+    justifyContent: "center"
   }
 });

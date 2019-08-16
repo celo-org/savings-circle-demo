@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Savings Cricle",
+    "name": "Savings Circle",
     "slug": "celo-savings-circle",
     "privacy": "public",
     "sdkVersion": "34.0.0",
@@ -11,11 +11,10 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/white-wallet-rings.png",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#e5b94c"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

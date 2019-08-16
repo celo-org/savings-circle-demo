@@ -66,19 +66,19 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   renderMemberList = () => {
     const members = Object.entries(this.props.circle.members).map(
       ([memberAddress, memberBalance]) => (
-        <ListItem avatar key={memberAddress}>
+        <View avatar key={memberAddress} style={styles.member}>
           <Left />
           <Body>
             <Text>
               {memberAddress === this.props.accountAddress
                 ? "You "
                 : "Someone else "}
-              ({memberBalance.toString()} cUSD)
+              ({memberBalance.toString()} cGLD)
             </Text>
             <Text note>{this.props.accountAddress}</Text>
           </Body>
           <Right />
-        </ListItem>
+        </View>
       )
     );
 
@@ -86,38 +86,27 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   };
 
   render() {
+    console.log(this.props.circle)
+    const eligibleWithdrawAmount = Object.keys(this.props.circle.members).length * this.props.circle.depositAmount.toNumber()
     return (
       <View style={styles.container}>
         <ScrollView>
-          <Form style={styles.form}>
-            <Text>{JSON.stringify(this.props.circle)}</Text>
-            <Item stackedLabel>
-              <Label>Contribution Amount per member</Label>
-              <Input
-                value={`${this.props.circle.prettyDepositAmount} cUSD`}
-                onChangeText={this.changeName}
-              />
-            </Item>
+          <View style={styles.header}>
+            <Text style={styles.name}>{this.props.circle.name}</Text>
+            <Text style={styles.balance}>{this.props.circle.totalBalance} cGLD</Text>
+            <Text style={styles.lastUpdated}>Last Updated: {moment.unix(this.props.circle.timestamp).fromNow()}</Text>
 
-            <Item stackedLabel>
-              <Label>Time of last action</Label>
-              <Input
-                value={moment.unix(this.props.circle.timestamp).fromNow()}
-              />
-            </Item>
+            <Button primary onPress={this.contributeOrWithdraw} style={styles.cta}>
+              <Text> {this.props.circle.withdrawable ? "Withdraw " + eligibleWithdrawAmount: "Contribute " + this.props.circle.prettyDepositAmount} cGLD</Text>
+            </Button>
+          </View>
 
-            <Item stackedLabel>
-              <Label>Members</Label>
-            </Item>
+          <View style={styles.memberList}>
+            <Text style={styles.memberTitle}>Members:</Text>
+          </View>
+          {this.renderMemberList()}
 
-            {this.renderMemberList()}
-          </Form>
         </ScrollView>
-        <Footer>
-          <Button primary onPress={this.contributeOrWithdraw}>
-            <Text> {this.props.circle.withdrawable ? "Withdraw" : "Contribute"} </Text>
-          </Button>
-        </Footer>
       </View>
     );
   }
@@ -145,8 +134,34 @@ const styles = StyleSheet.create({
     paddingTop: 15,
     backgroundColor: "#fff"
   },
-  form: {
-    flex: 1
+  name: {
+    fontSize: 36
+  },
+  memberTitle: {
+    fontSize: 20
+  },
+  cta: {
+    margin: 20
+  },
+  memberList: {
+    margin: 20,
+    fontSize: 24,
+    alignItems: "center"
+  },
+  member: {
+    alignItems: "center"
+  },
+  balance: {
+    fontSize: 30,
+    fontWeight: "200",
+    color: '#E5B94C',
+  },
+  lastUpdated: {
+    fontSize: 10
+  },
+  header: {
+    marginTop: 30,
+    alignItems: "center"
   },
   addButton: {
     flex: 1,
