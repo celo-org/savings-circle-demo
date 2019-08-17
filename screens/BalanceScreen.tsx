@@ -24,7 +24,6 @@ class BalanceScreen extends React.Component {
     })
   }
   render() {
-    console.log(this.props)
     return (
       <View style={styles.container}>
         <ScrollView
@@ -76,7 +75,6 @@ class BalanceScreen extends React.Component {
 }
 
 const mapStateToProps = (state: RootState) => {
-  console.log(state);
   return { hasAddress: hasAccount(state) };
 };
 

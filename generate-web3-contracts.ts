@@ -1,7 +1,7 @@
 import * as fs from 'fs'
 
 const contracts = ['SavingsCircle']
-const networkId = '44781'
+const networkId = '44782'
 const outputDir = 'web3-contracts'
 
 contracts.forEach(contractName => {

@@ -9,6 +9,8 @@ import { Provider, connect } from 'react-redux';
 import AppNavigator from './navigation/AppNavigator';
 import store from './store'
 
+import {YellowBox} from 'react-native';
+YellowBox.ignoreWarnings(['Warning: The provided value \'moz', 'Warning: The provided value \'ms-stream']);
 
 function App(props) {
   const [isLoadingComplete, setLoadingComplete] = useState(false);
@@ -40,8 +42,7 @@ export default RootComponent = () => (
 async function loadResourcesAsync() {
   await Promise.all([
     Asset.loadAsync([
-      require('./assets/images/robot-dev.png'),
-      require('./assets/images/robot-prod.png'),
+      require('./assets/images/gold-value.png'),
     ]),
     Font.loadAsync({
       // This is the font that we are using for our tab bar
