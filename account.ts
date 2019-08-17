@@ -4,7 +4,8 @@ import {
   GoldToken,
   StableToken,
   getErc20Balance,
-} from "@celo/contractkit";
+  parseFromContractDecimals,
+} from "@celo/walletkit";
 import BigNumber from "bignumber.js";
 import { web3 } from "./root";
 import { Contact } from "expo-contacts";
@@ -13,16 +14,16 @@ import { fetchContacts, PhoneNumberMappingEntry } from "@celo/dappkit";
 
 export interface State {
   address: string | undefined;
-  stableBalance: BigNumber;
-  goldBalance: BigNumber;
+  stableBalance: string;
+  goldBalance: string;
   rawContacts: { [id: string]: Contact };
   addressMapping: Dictionary<PhoneNumberMappingEntry>;
 }
 
 const INITIAL_STATE = {
   address: undefined,
-  stableBalance: new BigNumber(0),
-  goldBalance: new BigNumber(0),
+  stableBalance: "0",
+  goldBalance: "0",
   rawContacts: {},
   addressMapping: {}
 };
@@ -120,8 +121,8 @@ export const reducer = (
     case actions.SET_BALANCE:
       return {
         ...state,
-        stableBalance: action.stableBalance,
-        goldBalance: action.goldBalance
+        stableBalance: action.stableBalance.toString(),
+        goldBalance: action.goldBalance.toString()
       };
     case actions.LOGOUT:
       return INITIAL_STATE;
@@ -145,6 +146,10 @@ async function getBalances(address: string) {
   ]);
 }
 
+export function prettyBalance(number: string) {
+  return new BigNumber(number).div("1000000000000000000").decimalPlaces(2, BigNumber.ROUND_DOWN)
+}
+
 export function* refreshBalancesSaga(action: SetAccount | RefreshBalances) {
   const [stableBalance, goldBalance] = yield getBalances(action.address);
   yield put(setBalance(stableBalance, goldBalance));
@@ -161,6 +166,22 @@ export function* saga() {
   yield takeLeading(actions.REFRESH_BALANCES, refreshBalancesSaga);
   yield takeLeading(actions.GET_CONTACTS, fetchContactsSaga);
 }
+
+export const getContactForAddress = (address: string, rawContacts: { [id: string]: Contact },
+  addressMapping: Dictionary<PhoneNumberMappingEntry>): Contact | undefined => {
+    const entry = addressMapping[address]
+
+    if (entry === undefined) {
+      return undefined
+    }
+
+    const contact = rawContacts[entry.id]
+    if (contact === undefined) {
+      return undefined
+    }
+
+    return contact
+  }
 
 // Selectors
 export const hasAccount = (state: RootState) => {

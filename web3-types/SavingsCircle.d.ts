@@ -26,6 +26,7 @@ export class SavingsCircle extends Contract {
       2: string;
       3: BN;
       4: BN;
+      5: BN;
     }>;
 
     balancesForCircle(

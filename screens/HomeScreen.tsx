@@ -14,6 +14,7 @@ import { requestAccountAddress, listenToAccount, listenToSignedTxs } from "@celo
 import { sendAddCircleTx, CircleInfo } from "../savingscircle";
 import { Body, Text, Button } from "native-base";
 import { Linking } from "expo";
+import BigNumber from "bignumber.js";
 class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   static navigationOptions = (_any) => {
@@ -24,7 +25,6 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
   componentDidMount() {
     listenToAccount(this.props.setAccount)
-    listenToSignedTxs(this.props.sendAddCircleTx)
   }
 
   handleNewCirclePress = () => {
@@ -38,10 +38,9 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
   }
 
   renderCircleList = () => {
-    console.log(this.props.circles)
     return this.props.circles.map((circle) => (
-      <TouchableOpacity onPress={this.handleCirclePress(circle.name)}>
-        <View key={circle.name} style={[styles.circleDisplay]}>
+      <TouchableOpacity onPress={this.handleCirclePress(circle.name)} key={circle.name} >
+        <View style={[styles.circleDisplay]}>
           <Body>
             <View style={[styles.alignedItem, styles.helpContainer]}>
               <Text style={styles.circleName}>{ circle.name }</Text>
@@ -68,7 +67,7 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
             <View style={styles.alignedItem}>
               <View style={[styles.alignedColItem, styles.helpContainer]}>
               <Text style={[styles.goldBalance]}>
-                {this.props.goldBalance.toString()} cGLD
+                {new BigNumber(this.props.goldBalance).decimalPlaces(2, BigNumber.ROUND_DOWN).toString()} cGLD
               </Text>
               <Button primary onPress={this.handleNewCirclePress}>
                 <Text>+New Circle</Text>
@@ -92,6 +91,14 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
               }
             </View>
 
+          </View>
+
+          <View style={styles.helpContainer}>
+            <Button danger onPress={this.handleLogout}>
+              <Text>
+                Logout
+              </Text>
+            </Button>
           </View>
 
         </ScrollView>
@@ -135,7 +142,6 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 }
 
 const mapStateToProps = (state: RootState) => {
-  console.log(state);
   return {
     hasAddress: hasAccount(state),
     ...state.account,

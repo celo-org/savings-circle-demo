@@ -160,6 +160,10 @@ import Web3 from 'web3'
       {
         "name": "",
         "type": "uint256"
+      },
+      {
+        "name": "",
+        "type": "uint256"
       }
     ],
     "payable": false,
@@ -266,7 +270,7 @@ import Web3 from 'web3'
     "stateMutability": "nonpayable",
     "type": "function"
   }
-], "0x9EC0f14b5962Fc3813a3f3fDBa0A335620d2c9a5") as unknown as SavingsCircleType
+], "0x56a51cDF0090Ea36ac68BbAB8cb8847D8531b1D6") as unknown as SavingsCircleType
       // @ts-ignore
       contract.options.from = account || (await web3.eth.getAccounts())[0]
       return contract

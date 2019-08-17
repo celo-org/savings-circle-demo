@@ -23,12 +23,16 @@ import {
 import { connect } from "react-redux";
 import * as Permissions from "expo-permissions";
 import { addCircle } from "../savingscircle";
-import { getContacts, PhoneNumberMappingEntry } from "../account";
+import { getContacts } from "../account";
 import { RootState } from "../store";
 import { NavigationScreenProps, NavigationParams } from "react-navigation";
+import { PhoneNumberMappingEntry } from "@celo/dappkit";
+import { Contact } from "expo-contacts";
 
 interface OwnProps extends NavigationScreenProps<NavigationParams>{
   errorMessage?: string;
+  accountAddress: string,
+  contacts: { [id: string]: Contact }
 }
 
 class NewCircleScreen extends React.Component<OwnProps, {}> {
@@ -38,7 +42,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
 
     this.state = {
       name: "",
-      members: [this.props.accountAddress]
+      members: [{ address: this.props.accountAddress, self: true }]
     };
   }
 
@@ -53,7 +57,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
     this.setState(prevState => ({
       ...prevState,
       // @ts-ignore
-      members: [...prevState.members, entry.address]
+      members: [...prevState.members, entry]
     }))
   }
 
@@ -67,8 +71,17 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
   };
 
   onAddCircle = () => {
-    this.props.addCircle(this.state.name, this.state.members)
+    this.props.addCircle(this.state.name, this.state.members.map(member => member.address))
     this.props.navigation.goBack()
+  }
+
+  renderMemberName = (member: PhoneNumberMappingEntry)  => {
+    if (member.id === undefined || this.props.contacts[member.id] === undefined) {
+      return "Someone else"
+    }
+
+    const contact = this.props.contacts[member.id]
+    return contact.name
   }
 
   renderMemberList = () => {
@@ -80,16 +93,16 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
       );
     }
 
-    const members = this.state.members.map(memberAddress => (
-      <View key={memberAddress}>
+    const members = this.state.members.map(member => (
+      <View key={member.address}>
         <Left />
         <Body>
           <Text>
-            {memberAddress === this.props.accountAddress
+            {member.address === this.props.accountAddress
               ? "You"
-              : "Someone else"}
+              : this.renderMemberName(member)}
           </Text>
-          <Text note> {memberAddress}</Text>
+          <Text note> {member.address}</Text>
         </Body>
         <Right />
       </View>
@@ -136,7 +149,8 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
 }
 
 const mapStateToProps = (state: RootState) => ({
-  accountAddress: state.account.address
+  accountAddress: state.account.address,
+  contacts: state.account.rawContacts
 });
 
 const mapDispatchToProps = {

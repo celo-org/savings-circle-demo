@@ -539,7 +539,7 @@ export interface SavingsCircleInstance extends Truffle.ContractInstance {
   circleInfo(
     hashedName: string | BigNumber,
     txDetails?: Truffle.TransactionDetails
-  ): Promise<[string, (string)[], string, BigNumber, BigNumber]>;
+  ): Promise<[string, (string)[], string, BigNumber, BigNumber, BigNumber]>;
 
   balancesForCircle(
     hashedName: string | BigNumber,
