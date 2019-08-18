@@ -967,13 +967,13 @@
     web3 "1.0.0-beta.37"
     web3-utils "1.0.0-beta.37"
 
-"@celo/dappkit@0.0.1-af":
-  version "0.0.1-af"
-  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.1-af.tgz#b8fd96bc7b43cf8da92c3b6d0efa508d17c6f649"
-  integrity sha512-dWiNUwoij65rmP/n9Kjs0lNimYmjqD2uOk3gBTWUua6WYS5pciYP8wmSI+XZTq8WmR7yEfNXpV5I/2l9GIrq7A==
+"@celo/dappkit@0.0.7":
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.7.tgz#f58aeec1d2e7c9fcb45a10ce43df9772c79b18e7"
+  integrity sha512-v/mXh7v/LqXCh5twgc69ppSAKvBMN3e6OpK5pZLcKIhLgzzQQicRI6OuZ4D3BB7o5zs9rx/diKl4jZwL5fpxkQ==
   dependencies:
-    "@celo/utils" "0.0.6-beta3dappkit1"
-    "@celo/walletkit" "0.0.12"
+    "@celo/utils" "0.0.6-beta5"
+    "@celo/walletkit" "0.0.14"
     expo "^34.0.1"
     expo-contacts "6.0.0"
     libphonenumber-js "^1.7.22"
@@ -994,10 +994,10 @@
     lodash "^4.17.14"
     web3-utils "1.0.0-beta.37"
 
-"@celo/utils@0.0.6-beta3dappkit1":
-  version "0.0.6-beta3dappkit1"
-  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.6-beta3dappkit1.tgz#e57d72b689b99a8ad268ecb4622ecbd24c905be1"
-  integrity sha512-sCEbsjXLRp3dzpqftu9GGJ2bww7M/IKf9rdc9tGY32S0rN20Av9kytj3mi3DmA4a4TtkF2+3PZWKeW6gFanZkA==
+"@celo/utils@0.0.6-beta5", "@celo/utils@^0.0.6-beta4":
+  version "0.0.6-beta5"
+  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.6-beta5.tgz#a558cfc9dc68d9ec15888798c95cd6e5f1d3fe67"
+  integrity sha512-TGIDjr1aCcNRVv2Z3DZkjd71K/vNd6C18BPZw8VfKzSFyt0UcxkbN/X+loqvJSrwymtYgu/s6JdIQD3t14xiJA==
   dependencies:
     "@umpirsky/country-list" "git://github.com/umpirsky/country-list#05fda51"
     bignumber.js "^7.2.0"
@@ -1011,33 +1011,15 @@
     lodash "^4.17.14"
     web3-utils "1.0.0-beta.37"
 
-"@celo/utils@^0.0.5-dappkit9":
-  version "0.0.5-dappkit9"
-  resolved "https://registry.yarnpkg.com/@celo/utils/-/utils-0.0.5-dappkit9.tgz#27b80e5cb5c89b69f2a0d7e540d1ec336d25a0f5"
-  integrity sha512-kLs6aT+/+o6XCnUKwnvNLReewpSJuqhpZ2Hib1DQJO1A5g77t/yGlcFMhiQNXtX4RK2IYNouBcVhgdBlkNijmQ==
-  dependencies:
-    "@umpirsky/country-list" "git://github.com/umpirsky/country-list#05fda51"
-    bignumber.js "^7.2.0"
-    bn.js "4.11.8"
-    country-data "^0.0.31"
-    crypto-js "^3.1.9-1"
-    elliptic "^6.4.1"
-    ethereumjs-util "^5.2.0"
-    futoin-hkdf "^1.0.3"
-    google-libphonenumber "^3.2.1"
-    lodash "^4.17.14"
-    typescript "^3.3.3"
-    web3-utils "1.0.0-beta.37"
-
-"@celo/walletkit@0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@celo/walletkit/-/walletkit-0.0.12.tgz#d2ac3ef09e83fd97066f098b22e430f4a8848a62"
-  integrity sha512-+ebVoyzgFc9h6mmTfogZ+dTuS6BMopvhmC7dYqrN7QnVNkD/+cWSoWviDbLUsyQ17g7GidvlM6p7u6bZjJhBBQ==
+"@celo/walletkit@0.0.14":
+  version "0.0.14"
+  resolved "https://registry.yarnpkg.com/@celo/walletkit/-/walletkit-0.0.14.tgz#9e448b769febfa86abd8f4427e97150bb0f4d2c1"
+  integrity sha512-NG43qYglUQdHlLoIJM5dQtqrlacDb9R8DFrnO6xzz9tYdNj0z2Nkm699rDoe4ejc1g0a58XzWSRIXGUCwoJ3cQ==
   dependencies:
     "@0x/subproviders" "^4.1.0"
-    "@celo/utils" "^0.0.5-dappkit9"
+    "@celo/utils" "^0.0.6-beta4"
     "@google-cloud/storage" "^2.3.3"
-    "@types/jest" "^24.0.13"
+    "@types/jest" "^24.0.17"
     babel-jest "^24.8.0"
     bignumber.js "^7.2.0"
     chalk "^2.4.2"
@@ -1608,6 +1590,13 @@
   dependencies:
     "@types/jest-diff" "*"
 
+"@types/jest@^24.0.17":
+  version "24.0.17"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.17.tgz#b66ea026efb746eb5db1356ee28518aaff7af416"
+  integrity sha512-1cy3xkOAfSYn78dsBWy4M3h/QF/HeWPchNFDjysVtp3GHeTdSmtluNnELfCmfNRRHo0OWEcpf+NsEJQvwQfdqQ==
+  dependencies:
+    "@types/jest-diff" "*"
+
 "@types/lodash.zipobject@^4.1.4":
   version "4.1.6"
   resolved "https://registry.yarnpkg.com/@types/lodash.zipobject/-/lodash.zipobject-4.1.6.tgz#75e140f44ac7d7682a18d3aae8ee4594fad094d7"
@@ -1742,11 +1731,6 @@
   version "12.0.12"
   resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.12.tgz#45dd1d0638e8c8f153e87d296907659296873916"
   integrity sha512-SOhuU4wNBxhhTHxYaiG5NY4HBhDIDnJF60GU+2LqHAdKKer86//e4yg69aENCtQ04n0ovz+tq2YPME5t5yp4pw==
-
-"@umpirsky/country-list@git://github.com/umpirsky/country-list#05fda51":
-  version "1.0.0"
-  uid "05fda51cd97b3294e8175ffed06104c44b3c71d7"
-  resolved "git://github.com/umpirsky/country-list#05fda51cd97b3294e8175ffed06104c44b3c71d7"
 
 "@umpirsky/country-list@git://github.com/umpirsky/country-list.git#05fda51":
   version "1.0.0"

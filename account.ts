@@ -167,22 +167,6 @@ export function* saga() {
   yield takeLeading(actions.GET_CONTACTS, fetchContactsSaga);
 }
 
-export const getContactForAddress = (address: string, rawContacts: { [id: string]: Contact },
-  addressMapping: Dictionary<PhoneNumberMappingEntry>): Contact | undefined => {
-    const entry = addressMapping[address]
-
-    if (entry === undefined) {
-      return undefined
-    }
-
-    const contact = rawContacts[entry.id]
-    if (contact === undefined) {
-      return undefined
-    }
-
-    return contact
-  }
-
 // Selectors
 export const hasAccount = (state: RootState) => {
   return state.account.address !== undefined;

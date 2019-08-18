@@ -31,7 +31,8 @@ import {
 import { RootState } from "../store";
 import { NavigationScreenProps, NavigationParams } from "react-navigation";
 import moment from "moment";
-import { getContactForAddress, prettyBalance } from "../account";
+import { prettyBalance } from "../account";
+import { getContactForAddress } from "@celo/dappkit";
 
 interface OwnProps {
   errorMessage?: string;
