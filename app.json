@@ -1,13 +1,11 @@
 {
   "expo": {
-    "name": "Savings Circle",
+    "name": "Savings Circle Demo",
     "slug": "celo-savings-circle",
     "privacy": "public",
     "sdkVersion": "34.0.0",
     "platforms": [
-      "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
@@ -24,6 +22,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "Savings Circles let you pool funds with your friends to save for large purchases. They are known by a variety of names around the world and are a common way to get liquidity and access to loans without access to formal financial institutions.\\n\\n This is an example DApp on the Celo platform using DappKit. Read more about DAppKit at https://docs.celo.org/developer-resources/dappkit/ \\n\\n To use this DApp, you will need the Celo Wallet. Get it from https://celo.org/build/wallet. You fully try the experience of a Savings Circle, you will need to make a circle with other Celo users. Find them on our discord: https://discord.gg/6yWMkgM",
+    "githubUrl": "https://github.com/celo-org/savings-circle-demo"
   }
 }
