@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { RootState } from "../store";
 import { hasAccount, setAccount, logout } from "../account";
 import { requestAccountAddress, listenToAccount, listenToSignedTxs } from "@celo/dappkit";
-import { sendAddCircleTx, CircleInfo } from "../savingscircle";
+import { sendAddCircleTx, CircleInfo, prettyAmount } from "../savingscircle";
 import { Body, Text, Button } from "native-base";
 import { Linking } from "expo";
 import BigNumber from "bignumber.js";
@@ -67,7 +67,7 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
             <View style={styles.alignedItem}>
               <View style={[styles.alignedColItem, styles.helpContainer]}>
               <Text style={[styles.goldBalance]}>
-                {new BigNumber(this.props.goldBalance).decimalPlaces(2, BigNumber.ROUND_DOWN).toString()} cGLD
+                {prettyAmount(new BigNumber(this.props.goldBalance))} cGLD
               </Text>
               <Button primary onPress={this.handleNewCirclePress}>
                 <Text>+New Circle</Text>

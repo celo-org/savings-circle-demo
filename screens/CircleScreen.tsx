@@ -1,12 +1,11 @@
 import React from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { ScrollView, StyleSheet, View, TouchableHighlight } from "react-native";
 import {
   Container,
   Header,
   Content,
   Footer,
   Left,
-  Button,
   Icon,
   FooterTab,
   Body,
@@ -30,7 +29,6 @@ import {
 } from "../savingscircle";
 import { RootState } from "../store";
 import { NavigationScreenProps, NavigationParams } from "react-navigation";
-import moment from "moment";
 import { prettyBalance } from "../account";
 import { getContactForAddress } from "@celo/dappkit";
 
@@ -60,8 +58,8 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   };
 
   componentDidMount = () => {
-    this.props.fetchCircles()
-  }
+    this.props.fetchCircles();
+  };
 
   contributeOrWithdraw = () => {
     if (this.withdrawable()) {
@@ -75,80 +73,92 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   };
 
   renderMemberList = () => {
-    const members = Object.entries(this.props.circle.members).map(
-      ([memberAddress, memberBalance], index) => {
+    const members = Object.keys(this.props.circle.members).map(
+      (memberAddress) => {
         const contact = getContactForAddress(
           memberAddress,
           this.props.contacts,
           this.props.addressMapping
         );
         return (
-          <ListItem avatar key={memberAddress} style={styles.member}>
-            <Left />
-            <Body>
-              <Text>
-                {memberAddress.toLowerCase() === this.props.accountAddress.toLowerCase()
-                  ? "You "
-                  : contact
-                  ? contact.name
-                  : "Someone else"}
-                ({prettyBalance(memberBalance).toString()} cGLD)
-              </Text>
-              { index === this.props.circle.currentIndex ? (<Text>Turn to withdraw</Text>) : null }
-              <Text note>{memberAddress}</Text>
-            </Body>
-            <Right />
-          </ListItem>
+          <Text key={memberAddress} style={styles.member}>
+            {contact ? contact.firstName : memberAddress}
+
+            {memberAddress.toLowerCase() ===
+            this.props.accountAddress.toLowerCase()
+              ? " (You)"
+              : ""}
+          </Text>
         );
       }
     );
 
-    return <List>{members}</List>;
+    console.log(members);
+
+    return members;
   };
 
   withdrawable = () => {
-    return Object.keys(this.props.circle.members)[this.props.circle.currentIndex].toLowerCase() === this.props.accountAddress
-  }
+    return (
+      Object.keys(this.props.circle.members)[
+        this.props.circle.currentIndex
+      ].toLowerCase() === this.props.accountAddress
+    );
+  };
 
   render() {
     const eligibleWithdrawAmount =
-      (Object.keys(this.props.circle.members).length -1)*
+      (Object.keys(this.props.circle.members).length - 1) *
       this.props.circle.depositAmount;
+    console.log(this.props.circle.members);
     return (
       <View style={styles.container}>
-        <ScrollView>
-          <View style={styles.header}>
-            <Text style={styles.name}>{this.props.circle.name}</Text>
-            <Text style={styles.balance}>
-              {this.props.circle.totalBalance} cGLD
-            </Text>
-            <Text style={styles.lastUpdated}>
-              Last Updated: {moment.unix(this.props.circle.timestamp).fromNow()}
-            </Text>
-
-            <Button
-              primary
-              onPress={this.contributeOrWithdraw}
-              style={styles.cta}
-            >
-              <Text>
-                {" "}
-                {this.withdrawable()
-                  ? "Withdraw " + prettyBalance(eligibleWithdrawAmount)
-                  : "Contribute " + this.props.circle.prettyDepositAmount}{" "}
-                cGLD
-              </Text>
-            </Button>
-          </View>
-
+        <View style={styles.scrollContainer}>
+          <Text style={styles.totalsavings}>Total Savings</Text>
+          <Text style={styles.balance}>{this.props.circle.totalBalance} cGLD</Text>
           <View style={styles.memberList}>
             <Text style={styles.memberTitle}>Members:</Text>
+            <List>{this.renderMemberList()}</List>
           </View>
-          <List>
-            {this.renderMemberList()}
-          </List>
+        </View>
 
-        </ScrollView>
+        <View style={styles.center}>
+          <Text style={styles.subtitle}>It’s your turn to withdraw.</Text>
+          <Text style={styles.subtitle}>
+            Withdraw or Contribute more below.
+          </Text>
+
+          <TouchableHighlight
+            onPress={this.contributeOrWithdraw}
+            disabled={!this.withdrawable()}
+          >
+            <View
+              style={[
+                styles.button,
+                !this.withdrawable() ? { backgroundColor: "#CAD7DB" } : null
+              ]}
+            >
+              <Text style={styles.buttonText}>
+                Withdraw {prettyBalance(eligibleWithdrawAmount).toString()} cGLD
+              </Text>
+            </View>
+          </TouchableHighlight>
+          <TouchableHighlight
+            onPress={this.contributeOrWithdraw}
+            disabled={this.withdrawable()}
+          >
+            <View
+              style={[
+                styles.button,
+                this.withdrawable() ? { backgroundColor: "#CAD7DB" } : null
+              ]}
+            >
+              <Text style={styles.buttonText}>
+                Contribute {this.props.circle.prettyDepositAmount} cGLD
+              </Text>
+            </View>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
@@ -177,39 +187,84 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 15,
-    backgroundColor: "#fff"
+    backgroundColor: "#E5E5E5",
+    justifyContent: "flex-start"
+  },
+  scrollContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 20
+  },
+  center: {
+    flex: 1,
+    alignItems: "center",
+    textAlign: "center",
+    justifyContent: "center"
+  },
+  totalsavings: {
+    fontSize: 20,
+    color: "#2B7086"
+  },
+  subtitle: {
+    fontSize: 18,
+    color: "#6AA1B2",
+    fontWeight: "300",
+    textAlign: "center"
   },
   name: {
     fontSize: 36
   },
   memberTitle: {
-    fontSize: 20
+    fontSize: 15,
+    color: "#2B7086",
+    fontWeight: "600",
+    borderBottomWidth: 1,
+    padding: 10,
+    paddingLeft: 20,
+    marginBottom: 10,
+    borderBottomColor: "#2B7086"
   },
   cta: {
     margin: 20
   },
   memberList: {
-    margin: 20,
-    fontSize: 24,
-    alignItems: "center"
+    marginTop: 30,
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    paddingBottom: 20,
+    elevation: 4
   },
   member: {
-    alignItems: "center"
+    alignItems: "center",
+    color: "#2B7086",
+    margin: 2,
+    fontSize: 15,
+    marginLeft: 20
   },
   balance: {
-    fontSize: 30,
-    fontWeight: "200",
-    color: "#E5B94C"
-  },
-  lastUpdated: {
-    fontSize: 10
+    fontSize: 48,
+    fontWeight: "600",
+    color: "#2B7086"
   },
   header: {
     marginTop: 30,
     alignItems: "center"
   },
   addButton: {
-    flex: 1,
-    justifyContent: "flex-end"
+    flex: 1
+  },
+  button: {
+    backgroundColor: "#2B7086",
+    borderRadius: 4,
+    height: 50,
+    width: 280,
+    textAlign: 'center',
+    justifyContent: 'center',
+    margin: 10
+  },
+  buttonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#fff"
   }
 });

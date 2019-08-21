@@ -1,13 +1,7 @@
 import { RootState } from "./store";
 import { takeLeading, put } from "redux-saga/effects";
-import {
-  GoldToken,
-  StableToken,
-  getErc20Balance,
-  parseFromContractDecimals,
-} from "@celo/walletkit";
 import BigNumber from "bignumber.js";
-import { web3 } from "./root";
+import { web3, kit } from "./root";
 import { Contact } from "expo-contacts";
 import { Dictionary } from "lodash";
 import { fetchContacts, PhoneNumberMappingEntry } from "@celo/dappkit";
@@ -138,11 +132,11 @@ export const reducer = (
 };
 
 async function getBalances(address: string) {
-  const stableToken = await StableToken(web3);
-  const goldToken = await GoldToken(web3);
+  const stableToken = await kit.contracts.getStableToken()
+  const goldToken = await kit.contracts.getGoldToken()
   return Promise.all([
-    getErc20Balance(stableToken, address, web3),
-    getErc20Balance(goldToken, address, web3)
+    stableToken.balanceOf(address),
+    goldToken.balanceOf(address)
   ]);
 }
 
@@ -156,9 +150,8 @@ export function* refreshBalancesSaga(action: SetAccount | RefreshBalances) {
 }
 
 export function* fetchContactsSaga(action: GetContacts) {
-  const [rawContacts, phoneNumbersWithAddresses] = yield fetchContacts(web3);
-
-  yield put(setAddressMapping(rawContacts, phoneNumbersWithAddresses))
+  const {rawContacts, phoneNumbersByAddress} = yield fetchContacts(web3);
+  yield put(setAddressMapping(rawContacts, phoneNumbersByAddress))
 }
 
 export function* saga() {

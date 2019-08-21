@@ -2,13 +2,13 @@ import { takeLeading, put, select } from "redux-saga/effects";
 import { SetAccount, actions as AccountActions, getAccount, refreshBalances, Logout, prettyBalance } from "./account";
 import SavingsCircle from "./web3-contracts/SavingsCircle";
 import { SavingsCircle as SavingsCircleType } from "./web3-types/SavingsCircle";
-import { web3 } from "./root";
+import { web3, kit } from "./root";
 import BigNumber from "bignumber.js";
-import { GoldToken, parseFromContractDecimals } from "@celo/walletkit";
 import { requestTxSig, GasCurrency, waitForSignedTxs } from "@celo/dappkit";
 import { Linking } from "expo";
 import { zipObject } from "lodash";
 import { request } from "http";
+import { CeloContract } from "@celo/contractkit";
 
 const INITIAL_STATE = {
   circles: []
@@ -136,6 +136,12 @@ function getSum(total, num) {
   return new BigNumber(total.toString()).plus(new BigNumber(num.toString()))
 }
 
+export function prettyAmount(value: BigNumber) {
+  const decimals = 18
+  const one = new BigNumber(10).pow(decimals)
+  return value.div(one).decimalPlaces(2, BigNumber.ROUND_DOWN).toString()
+}
+
 async function deserializeCircleInfo(
   rawCircleinfo: RawCircleInfo,
   balances: {
@@ -145,7 +151,6 @@ async function deserializeCircleInfo(
   circleHash: string,
   withdrawable: boolean
 ): Promise<CircleInfo> {
-  const contract = await GoldToken(web3);
   const depositAmount = new BigNumber(rawCircleinfo[3].toString());
 
   const totalBalance = prettyBalance(balances[1].reduce(getSum, 0)).toString()
@@ -158,10 +163,7 @@ async function deserializeCircleInfo(
     ),
     tokenAddress: rawCircleinfo[2],
     depositAmount: depositAmount.toString(),
-    prettyDepositAmount: (await parseFromContractDecimals(
-      depositAmount,
-      contract
-    )).toString(),
+    prettyDepositAmount: prettyAmount(depositAmount),
     totalBalance,
     timestamp: parseInt(rawCircleinfo[4].toString(), 10),
     circleHash,
@@ -207,18 +209,17 @@ async function makeAddCircleTx(
 ) {
   const requestId = 'addCircle'
   const contract = await SavingsCircle(web3, address);
-  const goldToken = await GoldToken(web3, address);
   const depositAmount = web3.utils.toWei("1", "ether").toString();
 
   const tx = await contract.methods.addCircle(
     name,
     members,
-    goldToken._address,
+    await kit.registry.addressFor(CeloContract.GoldToken),
     depositAmount
   );
 
   requestTxSig(
-    web3,
+    kit,
     // @ts-ignore
     [
       {
@@ -276,21 +277,21 @@ async function makeContributeToCircleTx(
 ) {
   const requestId = 'contribute'
   const contract = await SavingsCircle(web3, address);
-  const goldToken = await GoldToken(web3, address);
-  const approveTx = await goldToken.methods.approve(
+  const goldToken = await kit.contracts.getGoldToken()
+  const approveTx = goldToken.approve(
     // @ts-ignore
     contract.options.address,
     amount.toString()
-  );
+  ).txo;
   const tx = await contract.methods.contribute(circleHash, amount.toString());
 
   requestTxSig(
-    web3,
+    kit,
     // @ts-ignore
     [
       {
         from: address,
-        to: goldToken.options.address,
+        to: await kit.registry.addressFor(CeloContract.GoldToken),
         gasCurrency: GasCurrency.cUSD,
         tx: approveTx
       },
@@ -336,7 +337,7 @@ async function makeWithdrawFromCircleTx(
   );
 
   requestTxSig(
-    web3,
+    kit,
     // @ts-ignore
     [
       {

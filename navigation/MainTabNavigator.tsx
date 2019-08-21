@@ -53,6 +53,8 @@ HomeStack.navigationOptions = {
 
 HomeStack.path = '';
 
+export default HomeStack;
+
 const LinksStack = createStackNavigator(
   {
     Links: LinksScreen,
@@ -93,4 +95,4 @@ const tabNavigator = createBottomTabNavigator({
 
 tabNavigator.path = '';
 
-export default tabNavigator;
+// export default tabNavigator;
