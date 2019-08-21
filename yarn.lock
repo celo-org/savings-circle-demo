@@ -839,10 +839,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@celo/contractkit@0.1.1-alpha":
-  version "0.1.1-alpha"
-  resolved "https://registry.yarnpkg.com/@celo/contractkit/-/contractkit-0.1.1-alpha.tgz#9831e477bcc9f94a2ac214854f86ca220019e4e3"
-  integrity sha512-/YBYHnEsFz4Qv/pkP58N/DonBd4izitphw6AlpNkKVsZNn3mQKlmDnik2aWBxkWK8SPtpXy4X5cV9M7YqQuxSA==
+"@celo/contractkit@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@celo/contractkit/-/contractkit-0.1.1.tgz#bd85812d883b58fbc8d9897a59e2f7311cc0e2eb"
+  integrity sha512-GQbLuLUEgKtwy2I8ZVi4P0HBVhh9MlT5S90vIrGznb9eZ2vwGahfOxHapVKcxw2I4tbVBNTTWWpcjzOtJZCY7Q==
   dependencies:
     "@celo/utils" "^0.0.6-beta5"
     "@types/debug" "^4.1.5"
@@ -851,12 +851,12 @@
     web3 "1.0.0-beta.37"
     web3-utils "1.0.0-beta.37"
 
-"@celo/dappkit@0.0.8-alpha3":
-  version "0.0.8-alpha3"
-  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.8-alpha3.tgz#625145236c7a51fff6e1c7d60702e967728922b9"
-  integrity sha512-n564/S7d0j0a97RpEDEzG04bdETFaDgXZ/My72Gw6UQktswINA/wbF+ru1fggZ5YYrM+1uNOFnyNpGthnMieAg==
+"@celo/dappkit@0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@celo/dappkit/-/dappkit-0.0.8.tgz#ac93b7b6a53cdae8c4e5f62736d5ddd6a31fe8b8"
+  integrity sha512-t0xqxS9lCwGU6gwWxU4pUL60uogBPKRl2CYjItJmo7poOC82eRszDyovd5qClv5qJpppp8+cTeysh9vJuI86BA==
   dependencies:
-    "@celo/contractkit" "0.1.1-alpha"
+    "@celo/contractkit" "0.1.1"
     "@celo/utils" "0.0.6-beta5"
     expo "^34.0.1"
     expo-contacts "6.0.0"

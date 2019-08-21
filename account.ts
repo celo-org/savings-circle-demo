@@ -150,7 +150,7 @@ export function* refreshBalancesSaga(action: SetAccount | RefreshBalances) {
 }
 
 export function* fetchContactsSaga(action: GetContacts) {
-  const {rawContacts, phoneNumbersByAddress} = yield fetchContacts(web3);
+  const {rawContacts, phoneNumbersByAddress} = yield fetchContacts(kit);
   yield put(setAddressMapping(rawContacts, phoneNumbersByAddress))
 }
 
