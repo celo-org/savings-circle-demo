@@ -7,7 +7,7 @@ import BigNumber from "bignumber.js";
 import { requestTxSig, GasCurrency, waitForSignedTxs } from "@celo/dappkit";
 import { Linking } from "expo";
 import { zipObject } from "lodash";
-import { request } from "http";
+import { toTxResult } from "@celo/contractkit/lib/utils/tx-result";
 import { CeloContract } from "@celo/contractkit";
 
 const INITIAL_STATE = {
@@ -252,13 +252,7 @@ export function* makeAddCircleTxSaga(action: AddCircle) {
 }
 
 async function sendTx(tx: string) {
-  return new Promise((resolve, reject) => {
-    web3.eth
-      .sendSignedTransaction(tx)
-      .on("confirmation", resolve)
-      .on("error", reject)
-      .catch(reject);
-  });
+  return toTxResult(web3.eth.sendSignedTransaction(tx)).waitReceipt()
 }
 
 export function* sendAddCircleTxSaga(action: SendAddCircleTx) {
