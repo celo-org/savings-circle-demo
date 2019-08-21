@@ -1,23 +1,8 @@
 import React from "react";
-import { ScrollView, StyleSheet, View, TouchableHighlight } from "react-native";
+import { StyleSheet, View, TouchableHighlight } from "react-native";
 import {
-  Container,
-  Header,
-  Content,
-  Footer,
-  Left,
-  Icon,
-  FooterTab,
-  Body,
-  Title,
-  Right,
-  Form,
-  Item,
-  Input,
-  Label,
   List,
   Text,
-  ListItem
 } from "native-base";
 import { connect } from "react-redux";
 import * as Permissions from "expo-permissions";
@@ -93,8 +78,6 @@ class CircleScreen extends React.Component<OwnProps, {}> {
       }
     );
 
-    console.log(members);
-
     return members;
   };
 
@@ -110,7 +93,6 @@ class CircleScreen extends React.Component<OwnProps, {}> {
     const eligibleWithdrawAmount =
       (Object.keys(this.props.circle.members).length - 1) *
       this.props.circle.depositAmount;
-    console.log(this.props.circle.members);
     return (
       <View style={styles.container}>
         <View style={styles.scrollContainer}>
