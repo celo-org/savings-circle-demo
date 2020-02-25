@@ -75,20 +75,6 @@ const val = {
   }
 };
 
-// HomeStack.navigationOptions = {
-//   tabBarLabel: "Homes",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={
-//         Platform.OS === "ios"
-//           ? `ios-information-circle${focused ? "" : "-outline"}`
-//           : "md-information-circle"
-//       }
-//     />
-//   )
-// };
-
 const HomeStackNavigator = () => {
   return (
     <HomeStack.Navigator>
@@ -101,63 +87,3 @@ const HomeStackNavigator = () => {
 };
 
 export default HomeStackNavigator;
-
-// const LinksStack = createStackNavigator(
-//   {
-//     Links: LinksScreen
-//   },
-//   config
-// );
-
-// LinksStack.navigationOptions = {
-//   tabBarLabel: "Links",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={Platform.OS === "ios" ? "ios-link" : "md-link"}
-//     />
-//   )
-// };
-
-// LinksStack.path = "";
-
-// const SettingsStack = createStackNavigator(
-//   {
-//     Settings: SettingsScreen
-//   },
-//   config
-// );
-
-// SettingsStack.navigationOptions = {
-//   tabBarLabel: "Settings",
-//   tabBarIcon: ({ focused }) => (
-//     <TabBarIcon
-//       focused={focused}
-//       name={Platform.OS === "ios" ? "ios-options" : "md-options"}
-//     />
-//   )
-// };
-
-// SettingsStack.path = "";
-
-// const Tab = createBottomTabNavigator();
-
-// const TabNavigator = () => {
-//   return (
-//     <Tab.Navigator>
-// <Tab.Screen name="Home" component={HomeStackNavigator} />
-// <Tab.Screen name="Links" component={LinksStackNavigator} />
-// <Tab.Screen name="Settings" component={SettingsStackNavigator} />
-// </Tab.Navigator>
-//   )
-// }
-
-// const tabNavigator = createBottomTabNavigator({
-//   HomeStack,
-//   LinksStack,
-//   SettingsStack
-// });
-
-// tabNavigator.path = "";
-
-// export default tabNavigator;
