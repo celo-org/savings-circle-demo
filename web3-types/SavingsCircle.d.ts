@@ -2,10 +2,16 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions, EventOptions } from "web3-eth-contract";
+import { Contract, ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { Callback, TransactionObject, ContractEvent } from "./types";
+import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+
+interface EventOptions {
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
+}
 
 export class SavingsCircle extends Contract {
   constructor(
@@ -13,54 +19,57 @@ export class SavingsCircle extends Contract {
     address?: string,
     options?: ContractOptions
   );
+  clone(): SavingsCircle;
   methods: {
-    circleMembers(hashedName: string | number[]): TransactionObject<(string)[]>;
-
-    circlesFor(user: string): TransactionObject<(string)[]>;
-
-    circleInfo(
-      hashedName: string | number[]
-    ): TransactionObject<{
-      0: string;
-      1: (string)[];
-      2: string;
-      3: BN;
-      4: BN;
-      5: BN;
-    }>;
-
-    balancesForCircle(
-      hashedName: string | number[]
-    ): TransactionObject<{
-      0: (string)[];
-      1: (BN)[];
-    }>;
-
-    withdrawable(hashedName: string | number[]): TransactionObject<boolean>;
+    initialized(): TransactionObject<boolean>;
 
     renounceOwnership(): TransactionObject<void>;
+
+    owner(): TransactionObject<string>;
+
+    isOwner(): TransactionObject<boolean>;
 
     transferOwnership(newOwner: string): TransactionObject<void>;
 
     initialize(): TransactionObject<void>;
 
+    circleMembers(hashedName: string | number[]): TransactionObject<string[]>;
+
+    circlesFor(user: string): TransactionObject<string[]>;
+
+    circleInfo(
+      hashedName: string | number[]
+    ): TransactionObject<{
+      0: string;
+      1: string[];
+      2: string;
+      3: string;
+      4: string;
+      5: string;
+    }>;
+
     addCircle(
       name: string,
-      members: (string)[],
+      members: string[],
       tokenAddress: string,
       depositAmount: number | string
     ): TransactionObject<void>;
+
+    balancesForCircle(
+      hashedName: string | number[]
+    ): TransactionObject<{
+      0: string[];
+      1: string[];
+    }>;
 
     contribute(
       hashedName: string | number[],
       value: number | string
     ): TransactionObject<void>;
 
-    withdraw(hashedName: string | number[]): TransactionObject<void>;
+    withdrawable(hashedName: string | number[]): TransactionObject<boolean>;
 
-    initialized(): TransactionObject<boolean>;
-    owner(): TransactionObject<string>;
-    isOwner(): TransactionObject<boolean>;
+    withdraw(hashedName: string | number[]): TransactionObject<void>;
   };
   events: {
     OwnershipTransferred: ContractEvent<{

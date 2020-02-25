@@ -16,15 +16,15 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"initialized\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/nambrot/devstuff/foo/contracts/Initializable.sol\":\"Initializable\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/nambrot/devstuff/foo/contracts/Initializable.sol\":{\"keccak256\":\"0xb9676c2269d8c9c69e8668b20222c82d3567435579001dff8caef409ae9900cd\",\"urls\":[\"bzzr://b01b85f1b1381139e1715e4c79e61e332746ea5f5491e70d97aa270a932ee336\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b50608b8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063158ef93e14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000809054906101000a900460ff168156fea165627a7a723058204ffc7f6e467a656b76dd7e7aece681883753d73d1f538c7c9f159eafe3cbacc40029",
-  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c8063158ef93e14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000809054906101000a900460ff168156fea165627a7a723058204ffc7f6e467a656b76dd7e7aece681883753d73d1f538c7c9f159eafe3cbacc40029",
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"initialized\",\"outputs\":[{\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/cmcewen/celo/savings-circle-demo/contracts/Initializable.sol\":\"Initializable\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/cmcewen/celo/savings-circle-demo/contracts/Initializable.sol\":{\"keccak256\":\"0xb9676c2269d8c9c69e8668b20222c82d3567435579001dff8caef409ae9900cd\",\"urls\":[\"bzzr://b01b85f1b1381139e1715e4c79e61e332746ea5f5491e70d97aa270a932ee336\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50608b8061001e6000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063158ef93e14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000809054906101000a900460ff168156fea165627a7a723058209b47e40b21acb173ba3780e20d85adef72f3e7c6029e19260437620bacfe7b6f0029",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c8063158ef93e14602d575b600080fd5b6033604d565b604051808215151515815260200191505060405180910390f35b6000809054906101000a900460ff168156fea165627a7a723058209b47e40b21acb173ba3780e20d85adef72f3e7c6029e19260437620bacfe7b6f0029",
   "sourceMap": "26:143:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:143:1;;;;;;;",
   "deployedSourceMap": "26:143:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:143:1;;;;;;;;;;;;;;;;;;;53:23;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;:::o",
   "source": "pragma solidity ^0.5.8;\n\n\ncontract Initializable {\n  bool public initialized;\n\n  modifier initializer() {\n    require(!initialized);\n    initialized = true;\n    _;\n  }\n}\n",
-  "sourcePath": "/Users/nambrot/devstuff/foo/contracts/Initializable.sol",
+  "sourcePath": "/Users/cmcewen/celo/savings-circle-demo/contracts/Initializable.sol",
   "ast": {
-    "absolutePath": "/Users/nambrot/devstuff/foo/contracts/Initializable.sol",
+    "absolutePath": "/Users/cmcewen/celo/savings-circle-demo/contracts/Initializable.sol",
     "exportedSymbols": {
       "Initializable": [
         86
@@ -134,10 +134,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1370,
-                        1371
+                        1547,
+                        1548
                       ],
-                      "referencedDeclaration": 1370,
+                      "referencedDeclaration": 1547,
                       "src": "110:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -241,7 +241,7 @@
     "src": "0:170:1"
   },
   "legacyAST": {
-    "absolutePath": "/Users/nambrot/devstuff/foo/contracts/Initializable.sol",
+    "absolutePath": "/Users/cmcewen/celo/savings-circle-demo/contracts/Initializable.sol",
     "exportedSymbols": {
       "Initializable": [
         86
@@ -351,10 +351,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        1370,
-                        1371
+                        1547,
+                        1548
                       ],
-                      "referencedDeclaration": 1370,
+                      "referencedDeclaration": 1547,
                       "src": "110:7:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -463,7 +463,7 @@
   },
   "networks": {},
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-08-04T19:48:52.621Z",
+  "updatedAt": "2020-02-24T19:45:05.036Z",
   "devdoc": {
     "methods": {}
   },

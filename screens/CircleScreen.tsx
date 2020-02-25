@@ -1,29 +1,39 @@
-import React from "react";
-import { StyleSheet, View, TouchableHighlight } from "react-native";
-import {
-  List,
-  Text,
-} from "native-base";
-import { connect } from "react-redux";
+import { getContactForAddress } from "@celo/dappkit";
+import { Contact } from "expo-contacts";
 import * as Permissions from "expo-permissions";
+import { List, Text } from "native-base";
+import React from "react";
+import { StyleSheet, TouchableHighlight, View } from "react-native";
+import { connect } from "react-redux";
+import { AddressMappingType, prettyBalance } from "../account";
+import { CircleScreenProps } from "../navigation/MainTabNavigator";
 import {
+  CircleInfo,
   contributeToCircle,
-  withdrawFromCircle,
   fetchCircles,
-  CircleInfo
+  withdrawFromCircle
 } from "../savingscircle";
 import { RootState } from "../store";
-import { NavigationScreenProps, NavigationParams } from "react-navigation";
-import { prettyBalance } from "../account";
-import { getContactForAddress } from "@celo/dappkit";
 
-interface OwnProps {
+type OwnProps = {
   errorMessage?: string;
-  navigation?: NavigationScreenProps<NavigationParams>;
+} & CircleScreenProps;
+interface StateProps {
   circle: CircleInfo;
+  contacts: { [id: string]: Contact };
+  addressMapping: AddressMappingType;
+  accountAddress: string;
 }
 
-class CircleScreen extends React.Component<OwnProps, {}> {
+interface DispatchProps {
+  contributeToCircle: typeof contributeToCircle;
+  withdrawFromCircle: typeof withdrawFromCircle;
+  fetchCircles: typeof fetchCircles;
+}
+
+type Props = StateProps & OwnProps & DispatchProps;
+
+class CircleScreen extends React.Component<Props> {
   constructor(props) {
     super(props);
   }
@@ -57,9 +67,16 @@ class CircleScreen extends React.Component<OwnProps, {}> {
     }
   };
 
+  contribute = () => {
+    this.props.contributeToCircle(
+      this.props.circle.depositAmount,
+      this.props.circle.circleHash
+    );
+  };
+
   renderMemberList = () => {
     const members = Object.keys(this.props.circle.members).map(
-      (memberAddress) => {
+      memberAddress => {
         const contact = getContactForAddress(
           memberAddress,
           this.props.contacts,
@@ -92,12 +109,15 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   render() {
     const eligibleWithdrawAmount =
       (Object.keys(this.props.circle.members).length - 1) *
-      this.props.circle.depositAmount;
+      parseFloat(this.props.circle.depositAmount);
+
     return (
       <View style={styles.container}>
         <View style={styles.scrollContainer}>
           <Text style={styles.totalsavings}>Total Savings</Text>
-          <Text style={styles.balance}>{this.props.circle.totalBalance} cGLD</Text>
+          <Text style={styles.balance}>
+            {this.props.circle.totalBalance} cGLD
+          </Text>
           <View style={styles.memberList}>
             <Text style={styles.memberTitle}>Members:</Text>
             <List>{this.renderMemberList()}</List>
@@ -125,16 +145,8 @@ class CircleScreen extends React.Component<OwnProps, {}> {
               </Text>
             </View>
           </TouchableHighlight>
-          <TouchableHighlight
-            onPress={this.contributeOrWithdraw}
-            disabled={this.withdrawable()}
-          >
-            <View
-              style={[
-                styles.button,
-                this.withdrawable() ? { backgroundColor: "#CAD7DB" } : null
-              ]}
-            >
+          <TouchableHighlight onPress={this.contribute}>
+            <View style={[styles.button]}>
               <Text style={styles.buttonText}>
                 Contribute {this.props.circle.prettyDepositAmount} cGLD
               </Text>
@@ -146,9 +158,9 @@ class CircleScreen extends React.Component<OwnProps, {}> {
   }
 }
 
-const mapStateToProps = (state: RootState, props: OwnProps) => ({
+const mapStateToProps = (state: RootState, props: OwnProps): StateProps => ({
   circle: state.savingsCircle.circles.find(
-    circle => circle.name === props.navigation.state.params.circle
+    circle => circle.name === props.route.params.circle
   ),
   contacts: state.account.rawContacts,
   addressMapping: state.account.addressMapping,
@@ -160,7 +172,8 @@ const mapDispatchToProps = {
   withdrawFromCircle,
   fetchCircles
 };
-export default connect(
+
+export default connect<StateProps, DispatchProps>(
   mapStateToProps,
   mapDispatchToProps
 )(CircleScreen);
@@ -239,12 +252,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     height: 50,
     width: 280,
-    textAlign: 'center',
-    justifyContent: 'center',
+    textAlign: "center",
+    justifyContent: "center",
     margin: 10
   },
   buttonText: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
     fontWeight: "600",
     color: "#fff"

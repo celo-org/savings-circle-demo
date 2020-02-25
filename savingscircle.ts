@@ -1,14 +1,21 @@
-import { takeLeading, put, select } from "redux-saga/effects";
-import { SetAccount, actions as AccountActions, getAccount, refreshBalances, Logout, prettyBalance } from "./account";
-import SavingsCircle from "./web3-contracts/SavingsCircle";
-import { SavingsCircle as SavingsCircleType } from "./web3-types/SavingsCircle";
-import { web3, kit } from "./root";
+import { CeloContract } from "@celo/contractkit";
+import { toTxResult } from "@celo/contractkit/lib/utils/tx-result";
+import { FeeCurrency, requestTxSig, waitForSignedTxs } from "@celo/dappkit";
 import BigNumber from "bignumber.js";
-import { requestTxSig, GasCurrency, waitForSignedTxs } from "@celo/dappkit";
 import { Linking } from "expo";
 import { zipObject } from "lodash";
-import { toTxResult } from "@celo/contractkit/lib/utils/tx-result";
-import { CeloContract } from "@celo/contractkit";
+import { put, select, takeLeading } from "redux-saga/effects";
+import {
+  actions as AccountActions,
+  getAccount,
+  Logout,
+  prettyBalance,
+  refreshBalances,
+  SetAccount
+} from "./account";
+import { kit, web3 } from "./root";
+import SavingsCircle from "./web3-contracts/SavingsCircle";
+import { SavingsCircle as SavingsCircleType } from "./web3-types/SavingsCircle";
 
 const INITIAL_STATE = {
   circles: []
@@ -45,17 +52,17 @@ export type ContributeToCircle = {
 };
 
 export type WithdrawFromCircle = {
-  type: actions.WITHDRAW_FROM_CIRCLE,
-  circleHash: string
-}
+  type: actions.WITHDRAW_FROM_CIRCLE;
+  circleHash: string;
+};
 
 export type ResetState = {
-  type: actions.RESET_STATE
-}
+  type: actions.RESET_STATE;
+};
 
 export type FetchCircles = {
-  type: actions.FETCH_CIRCLES
-}
+  type: actions.FETCH_CIRCLES;
+};
 
 export const addCircle = (name: string, members: string[]) => ({
   type: actions.ADD_CIRCLE,
@@ -67,21 +74,20 @@ export const sendAddCircleTx = (rawTxs: string[]) => ({
   rawTxs
 });
 
-export const contributeToCircle = (amount: BigNumber, circleHash: string) => ({
+export const contributeToCircle = (amount: string, circleHash: string) => ({
   type: actions.CONTRIBUTE_TO_CIRCLE,
   amount,
   circleHash
 });
-
 
 export const withdrawFromCircle = (circleHash: string) => ({
   type: actions.WITHDRAW_FROM_CIRCLE,
   circleHash
 });
 
-export const fetchCircles = (circleHash: string) => ({
+export const fetchCircles = () => ({
   type: actions.FETCH_CIRCLES
-})
+});
 
 export type ActionTypes =
   | FetchedCircles
@@ -90,7 +96,7 @@ export type ActionTypes =
   | ContributeToCircle
   | WithdrawFromCircle
   | ResetState
-  | FetchCircles
+  | FetchCircles;
 
 export interface State {
   circles: CircleInfo[];
@@ -104,7 +110,7 @@ export const reducer = (
     case actions.FETCHED_CIRCLES:
       return { ...state, circles: action.circles };
     case actions.RESET_STATE:
-      return INITIAL_STATE
+      return INITIAL_STATE;
     default:
       return state;
   }
@@ -112,10 +118,10 @@ export const reducer = (
 
 type RawCircleInfo = {
   0: string;
-  1: (string)[];
+  1: string[];
   2: string;
-  3: BN;
-  4: BN;
+  3: string;
+  4: string;
   5: string;
 };
 
@@ -133,27 +139,30 @@ export type CircleInfo = {
 };
 
 function getSum(total, num) {
-  return new BigNumber(total.toString()).plus(new BigNumber(num.toString()))
+  return new BigNumber(total.toString()).plus(new BigNumber(num.toString()));
 }
 
 export function prettyAmount(value: BigNumber) {
-  const decimals = 18
-  const one = new BigNumber(10).pow(decimals)
-  return value.div(one).decimalPlaces(2, BigNumber.ROUND_DOWN).toString()
+  const decimals = 18;
+  const one = new BigNumber(10).pow(decimals);
+  return value
+    .div(one)
+    .decimalPlaces(2, BigNumber.ROUND_DOWN)
+    .toString();
 }
 
 async function deserializeCircleInfo(
   rawCircleinfo: RawCircleInfo,
   balances: {
     0: string[];
-    1: BN[];
+    1: string[];
   },
   circleHash: string,
   withdrawable: boolean
 ): Promise<CircleInfo> {
   const depositAmount = new BigNumber(rawCircleinfo[3].toString());
 
-  const totalBalance = prettyBalance(balances[1].reduce(getSum, 0)).toString()
+  const totalBalance = prettyBalance(balances[1].reduce(getSum, 0)).toString();
 
   return {
     name: rawCircleinfo[0],
@@ -180,13 +189,15 @@ async function fetchSavingsCircleInfo(
 
   const circleInfo = await contract.methods.circleInfo(circleHash).call();
 
-  const withdrawable = await contract.methods.withdrawable(circleHash).call()
+  const withdrawable = await contract.methods.withdrawable(circleHash).call();
 
   return deserializeCircleInfo(circleInfo, balances, circleHash, withdrawable);
 }
 
 export async function getSavingsCircles(address: string) {
+  debugger;
   const contract = await SavingsCircle(web3, address);
+  debugger;
   const circleHashes = await contract.methods.circlesFor(address).call();
 
   const circles = await Promise.all(
@@ -197,7 +208,9 @@ export async function getSavingsCircles(address: string) {
 }
 
 export function* fetchSavingsCircles(action: SetAccount | FetchCircles) {
-  const address = action.address !== undefined ? action.address : yield select(getAccount);
+  const address =
+    // @ts-ignore
+    action.address !== undefined ? action.address : yield select(getAccount);
   const circles = yield getSavingsCircles(address);
   yield put({ type: actions.FETCHED_CIRCLES, circles });
 }
@@ -207,7 +220,7 @@ async function makeAddCircleTx(
   name: string,
   members: string[]
 ) {
-  const requestId = 'addCircle'
+  const requestId = "addCircle";
   const contract = await SavingsCircle(web3, address);
   const depositAmount = web3.utils.toWei("1", "ether").toString();
 
@@ -226,7 +239,7 @@ async function makeAddCircleTx(
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        feeCurrency: FeeCurrency.cUSD,
         tx: tx
       }
     ],
@@ -244,7 +257,7 @@ export function* makeAddCircleTxSaga(action: AddCircle) {
   const address = yield select(getAccount);
   const requestId = yield makeAddCircleTx(address, action.name, action.members);
 
-  const dappKitResponse = yield waitForSignedTxs(requestId)
+  const dappKitResponse = yield waitForSignedTxs(requestId);
   yield Promise.all(dappKitResponse.rawTxs.map(sendTx));
 
   const circles = yield getSavingsCircles(address);
@@ -252,7 +265,7 @@ export function* makeAddCircleTxSaga(action: AddCircle) {
 }
 
 async function sendTx(tx: string) {
-  return toTxResult(web3.eth.sendSignedTransaction(tx)).waitReceipt()
+  return toTxResult(web3.eth.sendSignedTransaction(tx)).waitReceipt();
 }
 
 export function* sendAddCircleTxSaga(action: SendAddCircleTx) {
@@ -269,9 +282,9 @@ async function makeContributeToCircleTx(
   amount: BigNumber,
   circleHash: string
 ) {
-  const requestId = 'contribute'
+  const requestId = "contribute";
   const contract = await SavingsCircle(web3, address);
-  const goldToken = await kit.contracts.getGoldToken()
+  const goldToken = await kit.contracts.getGoldToken();
   const approveTx = goldToken.approve(
     // @ts-ignore
     contract.options.address,
@@ -286,14 +299,14 @@ async function makeContributeToCircleTx(
       {
         from: address,
         to: await kit.registry.addressFor(CeloContract.GoldToken),
-        gasCurrency: GasCurrency.cUSD,
+        feeCurrency: FeeCurrency.cUSD,
         tx: approveTx
       },
       {
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        feeCurrency: FeeCurrency.cUSD,
         // @ts-ignore
         tx: tx,
         estimatedGas: 100000
@@ -311,24 +324,23 @@ async function makeContributeToCircleTx(
 
 export function* contributeToCircleSaga(action: ContributeToCircle) {
   const address = yield select(getAccount);
-  const requestId = yield makeContributeToCircleTx(address, action.amount, action.circleHash);
+  const requestId = yield makeContributeToCircleTx(
+    address,
+    action.amount,
+    action.circleHash
+  );
 
-  const dappKitResponse = yield waitForSignedTxs(requestId)
+  const dappKitResponse = yield waitForSignedTxs(requestId);
   yield Promise.all(dappKitResponse.rawTxs.map(sendTx));
 
   const circles = yield getSavingsCircles(address);
   yield put({ type: actions.FETCHED_CIRCLES, circles });
 }
 
-async function makeWithdrawFromCircleTx(
-  address: string,
-  circleHash: string,
-) {
-  const requestId = 'withdraw'
+async function makeWithdrawFromCircleTx(address: string, circleHash: string) {
+  const requestId = "withdraw";
   const contract = await SavingsCircle(web3, address);
-  const tx = await contract.methods.withdraw(
-    circleHash
-  );
+  const tx = await contract.methods.withdraw(circleHash);
 
   requestTxSig(
     kit,
@@ -338,7 +350,7 @@ async function makeWithdrawFromCircleTx(
         from: address,
         // @ts-ignore
         to: contract.options.address,
-        gasCurrency: GasCurrency.cUSD,
+        feeCurrency: FeeCurrency.cUSD,
         tx: tx
       }
     ],
@@ -356,16 +368,16 @@ export function* withdrawFromCircleSaga(action: WithdrawFromCircle) {
   const address = yield select(getAccount);
   const requestId = yield makeWithdrawFromCircleTx(address, action.circleHash);
 
-  const dappKitResponse = yield waitForSignedTxs(requestId)
+  const dappKitResponse = yield waitForSignedTxs(requestId);
   yield Promise.all(dappKitResponse.rawTxs.map(sendTx));
 
   const circles = yield getSavingsCircles(address);
   yield put({ type: actions.FETCHED_CIRCLES, circles });
-  yield put(refreshBalances(address))
+  yield put(refreshBalances(address));
 }
 
 function* logoutSaga(_action: Logout) {
-  yield put({ type: actions.RESET_STATE })
+  yield put({ type: actions.RESET_STATE });
 }
 
 export function* saga() {
@@ -375,5 +387,5 @@ export function* saga() {
   yield takeLeading(actions.CONTRIBUTE_TO_CIRCLE, contributeToCircleSaga);
   yield takeLeading(actions.WITHDRAW_FROM_CIRCLE, withdrawFromCircleSaga);
   yield takeLeading(AccountActions.LOGOUT, logoutSaga);
-  yield takeLeading(actions.FETCH_CIRCLES, fetchSavingsCircles)
+  yield takeLeading(actions.FETCH_CIRCLES, fetchSavingsCircles);
 }

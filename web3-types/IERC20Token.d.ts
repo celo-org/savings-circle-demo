@@ -2,10 +2,16 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions, EventOptions } from "web3-eth-contract";
+import { Contract, ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { Callback, TransactionObject, ContractEvent } from "./types";
+import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+
+interface EventOptions {
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
+}
 
 export class IERC20Token extends Contract {
   constructor(
@@ -13,11 +19,8 @@ export class IERC20Token extends Contract {
     address?: string,
     options?: ContractOptions
   );
+  clone(): IERC20Token;
   methods: {
-    balanceOf(arg0: string): TransactionObject<BN>;
-
-    allowance(arg0: string, arg1: string): TransactionObject<BN>;
-
     transfer(arg0: string, arg1: number | string): TransactionObject<boolean>;
 
     approve(arg0: string, arg1: number | string): TransactionObject<boolean>;
@@ -28,24 +31,28 @@ export class IERC20Token extends Contract {
       arg2: number | string
     ): TransactionObject<boolean>;
 
-    totalSupply(): TransactionObject<BN>;
+    totalSupply(): TransactionObject<string>;
+
+    balanceOf(arg0: string): TransactionObject<string>;
+
+    allowance(arg0: string, arg1: string): TransactionObject<string>;
   };
   events: {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

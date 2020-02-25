@@ -1,42 +1,51 @@
+import { PhoneNumberMappingEntry } from "@celo/dappkit";
+import * as Permissions from "expo-permissions";
+import {
+  Body,
+  Button,
+  Form,
+  Input,
+  Item,
+  Left,
+  List,
+  Right,
+  Text
+} from "native-base";
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  Footer,
-  Left,
-  Button,
-  Icon,
-  FooterTab,
-  Body,
-  Title,
-  Right,
-  Form,
-  Item,
-  Input,
-  Label,
-  List,
-  Text,
-  ListItem
-} from "native-base";
 import { connect } from "react-redux";
-import * as Permissions from "expo-permissions";
+import { ContactMappingType, getContacts } from "../account";
+import { NewCircleScreenProps } from "../navigation/MainTabNavigator";
 import { addCircle } from "../savingscircle";
-import { getContacts } from "../account";
 import { RootState } from "../store";
-import { NavigationScreenProps, NavigationParams } from "react-navigation";
-import { PhoneNumberMappingEntry } from "@celo/dappkit";
-import { Contact } from "expo-contacts";
 
-interface OwnProps extends NavigationScreenProps<NavigationParams>{
+interface OwnProps {
   errorMessage?: string;
-  accountAddress: string,
-  contacts: { [id: string]: Contact }
 }
 
-class NewCircleScreen extends React.Component<OwnProps, {}> {
+interface StateProps {
+  accountAddress: string;
+  contacts: ContactMappingType;
+}
 
+interface Member {
+  address: string;
+  self: boolean;
+  id?: undefined;
+}
+
+interface State {
+  name: string;
+  members: (Member | PhoneNumberMappingEntry)[];
+}
+
+interface DispatchProps {
+  addCircle: typeof addCircle;
+  getContacts: typeof getContacts;
+}
+
+type Props = OwnProps & StateProps & DispatchProps & NewCircleScreenProps;
+class NewCircleScreen extends React.Component<Props, State> {
   constructor(props) {
     super(props);
 
@@ -48,7 +57,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
 
   static navigationOptions = () => ({
     title: "Add Circle"
-  })
+  });
   changeName = (name: string) => {
     this.setState({ name });
   };
@@ -56,33 +65,44 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
   addMember = (entry: PhoneNumberMappingEntry) => {
     this.setState(prevState => ({
       ...prevState,
-      // @ts-ignore
       members: [...prevState.members, entry]
-    }))
-  }
+    }));
+  };
 
   openAddMember = async () => {
     const { status } = await Permissions.askAsync(Permissions.CONTACTS);
 
     if (status == Permissions.PermissionStatus.GRANTED) {
-      this.props.getContacts()
-      this.props.navigation.navigate('AddMember', { addMember: this.addMember })
+      this.props.getContacts();
+      this.props.navigation.navigate("AddMember", {
+        addMember: this.addMember
+      });
     }
   };
 
   onAddCircle = () => {
-    this.props.addCircle(this.state.name, this.state.members.map(member => member.address))
-    this.props.navigation.goBack()
-  }
+    this.props.addCircle(
+      this.state.name,
+      this.state.members.map(member => member.address)
+    );
+    this.props.navigation.goBack();
+  };
 
-  renderMemberName = (member: PhoneNumberMappingEntry)  => {
-    if (member.id === undefined || this.props.contacts[member.id] === undefined) {
-      return "Someone else"
+  renderMemberName = (member: PhoneNumberMappingEntry | Member) => {
+    if (member.address === this.props.accountAddress) {
+      return "You";
     }
 
-    const contact = this.props.contacts[member.id]
-    return contact.name
-  }
+    if (
+      member.id === undefined ||
+      this.props.contacts[member.id] === undefined
+    ) {
+      return "Someone else";
+    }
+
+    const contact = this.props.contacts[member.id];
+    return contact.name;
+  };
 
   renderMemberList = () => {
     if (this.state.members.length == 0) {
@@ -97,11 +117,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
       <View key={member.address}>
         <Left />
         <Body>
-          <Text>
-            {member.address === this.props.accountAddress
-              ? "You"
-              : this.renderMemberName(member)}
-          </Text>
+          <Text>{this.renderMemberName(member)}</Text>
           <Text note> {member.address}</Text>
         </Body>
         <Right />
@@ -120,9 +136,13 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
            * we just wanted to provide you with some helpful links.
            */}
           <Form style={styles.form}>
-
             <View style={styles.nameContainer}>
-              <Input style={styles.nameInput} value={this.state.name} placeholder="Circle Name" onChangeText={this.changeName} />
+              <Input
+                style={styles.nameInput}
+                value={this.state.name}
+                placeholder="Circle Name"
+                onChangeText={this.changeName}
+              />
             </View>
 
             <View style={styles.memberTitle}>
@@ -135,7 +155,6 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
               <Text style={styles.memberText}>Members:</Text>
             </View>
             {this.renderMemberList()}
-
           </Form>
         </ScrollView>
         <View style={styles.memberTitle}>
@@ -148,7 +167,7 @@ class NewCircleScreen extends React.Component<OwnProps, {}> {
   }
 }
 
-const mapStateToProps = (state: RootState) => ({
+const mapStateToProps = (state: RootState): StateProps => ({
   accountAddress: state.account.address,
   contacts: state.account.rawContacts
 });
@@ -156,9 +175,11 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = {
   addCircle,
   getContacts
-}
-export default connect(mapStateToProps, mapDispatchToProps)(NewCircleScreen);
-
+};
+export default connect<StateProps, DispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(NewCircleScreen);
 
 const styles = StyleSheet.create({
   container: {

@@ -1,4 +1,4 @@
-import * as WebBrowser from "expo-web-browser";
+import { Linking } from "expo";
 import React from "react";
 import {
   Image,
@@ -10,18 +10,25 @@ import {
   View
 } from "react-native";
 import { connect } from "react-redux";
-import { MonoText } from "../components/StyledText";
-import { statement } from "@babel/template";
-import { RootState } from "../store";
 import { hasAccount, setAccount } from "../account";
-import { Linking } from "expo";
+import { MonoText } from "../components/StyledText";
+import { RootState } from "../store";
 
-class BalanceScreen extends React.Component {
+interface StateProps {
+  hasAddress: boolean;
+}
+interface DispatchProps {
+  setAccount: typeof setAccount;
+}
+
+type Props = StateProps & DispatchProps;
+
+class BalanceScreen extends React.Component<Props> {
   componentDidMount() {
-    Linking.addEventListener('url', ({url}) => {
-      const { path, queryParams } = Linking.parse(url)
-      this.props.setAccount(queryParams.account)
-    })
+    Linking.addEventListener("url", ({ url }) => {
+      const { path, queryParams } = Linking.parse(url);
+      this.props.setAccount(queryParams.account);
+    });
   }
   render() {
     return (
@@ -80,13 +87,12 @@ const mapStateToProps = (state: RootState) => {
 
 const mapDispatchToProps = {
   setAccount
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(BalanceScreen);
-
-BalanceScreen.navigationOptions = {
-  header: null
 };
+
+export default connect<StateProps, DispatchProps>(
+  mapStateToProps,
+  mapDispatchToProps
+)(BalanceScreen);
 
 function DevelopmentModeNotice() {
   if (__DEV__) {

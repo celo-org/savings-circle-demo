@@ -1,3 +1,7 @@
+import { listenToAccount, requestAccountAddress } from "@celo/dappkit";
+import BigNumber from "bignumber.js";
+import { Linking } from "expo";
+import { Body, Button, Text } from "native-base";
 import React from "react";
 import {
   Image,
@@ -8,102 +12,108 @@ import {
   View
 } from "react-native";
 import { connect } from "react-redux";
+import { hasAccount, logout, setAccount } from "../account";
+import { HomeScreenProps, HomeScreens } from "../navigation/MainTabNavigator";
+import { CircleInfo, prettyAmount, sendAddCircleTx } from "../savingscircle";
 import { RootState } from "../store";
-import { hasAccount, setAccount, logout } from "../account";
-import { requestAccountAddress, listenToAccount, listenToSignedTxs } from "@celo/dappkit";
-import { sendAddCircleTx, CircleInfo, prettyAmount } from "../savingscircle";
-import { Body, Text, Button } from "native-base";
-import { Linking } from "expo";
-import BigNumber from "bignumber.js";
-class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
-  static navigationOptions = (_any) => {
+interface StateProps {
+  hasAddress: boolean;
+  circles: CircleInfo[];
+  goldBalance: string;
+}
+interface DispatchProps {
+  setAccount: typeof setAccount;
+  sendAddCircleTx: typeof sendAddCircleTx;
+  logout: typeof logout;
+}
+
+type Props = StateProps & DispatchProps & HomeScreenProps;
+class HomeScreen extends React.Component<Props> {
+  static navigationOptions = _any => {
     return {
       title: "Celo Savings Circle"
     };
   };
 
   componentDidMount() {
-    listenToAccount(this.props.setAccount)
+    listenToAccount(this.props.setAccount);
   }
 
   handleNewCirclePress = () => {
-    this.props.navigation.navigate('NewCircle')
-  }
+    this.props.navigation.navigate(HomeScreens.NewCircle);
+  };
 
   handleCirclePress = (circle: string) => {
     return () => {
-      this.props.navigation.navigate('CirclePage', { circle })
-    }
-  }
+      this.props.navigation.navigate(HomeScreens.Circle, { circle });
+    };
+  };
 
   renderCircleList = () => {
-    return this.props.circles.map((circle) => (
-      <TouchableOpacity onPress={this.handleCirclePress(circle.name)} key={circle.name} >
+    return this.props.circles.map(circle => (
+      <TouchableOpacity
+        onPress={this.handleCirclePress(circle.name)}
+        key={circle.name}
+      >
         <View style={[styles.circleDisplay]}>
           <Body>
             <View style={[styles.alignedItem, styles.helpContainer]}>
-              <Text style={styles.circleName}>{ circle.name }</Text>
-              <Text style={styles.circleBalance}>{ circle.totalBalance }</Text>
+              <Text style={styles.circleName}>{circle.name}</Text>
+              <Text style={styles.circleBalance}>{circle.totalBalance}</Text>
             </View>
           </Body>
         </View>
       </TouchableOpacity>
-    ))
-  }
+    ));
+  };
 
   handleLogout = () => {
-    this.props.logout()
-  }
+    this.props.logout();
+  };
   render() {
     if (this.props.hasAddress) {
       return (
         <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}
-        >
-          <View style={styles.welcomeContainer}>
-            <View style={styles.alignedItem}>
-              <View style={[styles.alignedColItem, styles.helpContainer]}>
-              <Text style={[styles.goldBalance]}>
-                {prettyAmount(new BigNumber(this.props.goldBalance))} cGLD
-              </Text>
-              <Button primary onPress={this.handleNewCirclePress}>
-                <Text>+New Circle</Text>
-              </Button>
+          <ScrollView
+            style={styles.container}
+            contentContainerStyle={styles.contentContainer}
+          >
+            <View style={styles.welcomeContainer}>
+              <View style={styles.alignedItem}>
+                <View style={[styles.alignedColItem, styles.helpContainer]}>
+                  <Text style={[styles.goldBalance]}>
+                    {prettyAmount(new BigNumber(this.props.goldBalance))} cGLD
+                  </Text>
+                  <Button primary onPress={this.handleNewCirclePress}>
+                    <Text>+New Circle</Text>
+                  </Button>
+                </View>
               </View>
             </View>
 
-          </View>
+            <View style={styles.bar}>
+              <View style={styles.alignedItem}>
+                <Text style={styles.merchTitle}>Your Circles:</Text>
+              </View>
 
-          <View style={styles.bar}>
-            <View style={styles.alignedItem}>
-              <Text style={styles.merchTitle}>
-                Your Circles:
-              </Text>
+              <View style={styles.helpContainerNoPad}>
+                {this.props.circles.length > 0 ? (
+                  this.renderCircleList()
+                ) : (
+                  <Text>You Have No Circles Yet!</Text>
+                )}
+              </View>
             </View>
 
-            <View style={styles.helpContainerNoPad}>
-              { this.props.circles.length > 0 ?
-                this.renderCircleList() :
-                <Text>You Have No Circles Yet!</Text>
-              }
+            <View style={styles.helpContainer}>
+              <Button danger onPress={this.handleLogout}>
+                <Text>Logout</Text>
+              </Button>
             </View>
-
-          </View>
-
-          <View style={styles.helpContainer}>
-            <Button danger onPress={this.handleLogout}>
-              <Text>
-                Logout
-              </Text>
-            </Button>
-          </View>
-
-        </ScrollView>
-      </View>
-      )
+          </ScrollView>
+        </View>
+      );
     }
 
     return (
@@ -113,7 +123,10 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
           contentContainerStyle={styles.contentContainer}
         >
           <View style={styles.welcomeContainer}>
-            <Image source={require("../assets/images/gold-value.png")} style={styles.welcomeImage} />
+            <Image
+              source={require("../assets/images/gold-value.png")}
+              style={styles.welcomeImage}
+            />
           </View>
 
           <View style={styles.helpContainer}>
@@ -124,7 +137,9 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
 
           <View style={styles.helpContainer}>
             <Text style={styles.helpText}>
-              Savings Circles let you pool funds with your friends to save for large purchases. To get started, we'll need permission to connect this app to your Celo Wallet Account.
+              Savings Circles let you pool funds with your friends to save for
+              large purchases. To get started, we'll need permission to connect
+              this app to your Celo Wallet Account.
             </Text>
           </View>
 
@@ -133,18 +148,16 @@ class HomeScreen extends React.Component<{ circles: CircleInfo[] }> {
               <Text>Connect Wallet Account</Text>
             </Button>
           </View>
-
         </ScrollView>
-
       </View>
     );
   }
 }
 
-const mapStateToProps = (state: RootState) => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
     hasAddress: hasAccount(state),
-    ...state.account,
+    goldBalance: state.account.goldBalance,
     circles: state.savingsCircle.circles
   };
 };
@@ -153,7 +166,7 @@ const mapDispatchToProps = {
   setAccount,
   sendAddCircleTx,
   logout
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
@@ -182,10 +195,10 @@ function DevelopmentModeNotice() {
 
 function handleLearnMorePress() {
   requestAccountAddress({
-    callback: Linking.makeUrl('/home/test'),
-    requestId: 'test',
-    dappName: 'My Dapps'
-  })
+    callback: Linking.makeUrl("/home/test"),
+    requestId: "test",
+    dappName: "My Dapps"
+  });
 }
 
 function handleHelpPress() {
@@ -300,7 +313,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     marginBottom: 20,
     fontWeight: "200",
-    color: '#E5B94C',
+    color: "#E5B94C"
   },
   tabBarInfoText: {
     fontSize: 17,
@@ -313,7 +326,7 @@ const styles = StyleSheet.create({
   helpContainer: {
     marginTop: 15,
     padding: 15,
-    alignItems: "center",
+    alignItems: "center"
   },
   helpContainerNoPad: {
     marginTop: 5,
