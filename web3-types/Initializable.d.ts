@@ -2,10 +2,16 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions, EventOptions } from "web3-eth-contract";
+import { Contract, ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { Callback, TransactionObject, ContractEvent } from "./types";
+import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+
+interface EventOptions {
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
+}
 
 export class Initializable extends Contract {
   constructor(
@@ -13,6 +19,7 @@ export class Initializable extends Contract {
     address?: string,
     options?: ContractOptions
   );
+  clone(): Initializable;
   methods: {
     initialized(): TransactionObject<boolean>;
   };

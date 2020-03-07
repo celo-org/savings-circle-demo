@@ -2,10 +2,16 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions, EventOptions } from "web3-eth-contract";
+import { Contract, ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { Callback, TransactionObject, ContractEvent } from "./types";
+import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+
+interface EventOptions {
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
+}
 
 export class MockStableToken extends Contract {
   constructor(
@@ -13,12 +19,33 @@ export class MockStableToken extends Contract {
     address?: string,
     options?: ContractOptions
   );
+  clone(): MockStableToken;
   methods: {
+    _needsRebase(): TransactionObject<boolean>;
+
+    decimals(): TransactionObject<string>;
+
+    _totalSupply(): TransactionObject<string>;
+
+    _targetTotalSupply(): TransactionObject<string>;
+
+    setNeedsRebase(): TransactionObject<void>;
+
+    setTotalSupply(value: number | string): TransactionObject<void>;
+
+    setTargetTotalSupply(value: number | string): TransactionObject<void>;
+
     mint(arg0: string, arg1: number | string): TransactionObject<boolean>;
 
     burn(arg0: number | string): TransactionObject<boolean>;
 
+    needsRebase(): TransactionObject<boolean>;
+
     resetLastRebase(): TransactionObject<void>;
+
+    totalSupply(): TransactionObject<string>;
+
+    targetTotalSupply(): TransactionObject<string>;
 
     transfer(arg0: string, arg1: number | string): TransactionObject<boolean>;
 
@@ -27,20 +54,6 @@ export class MockStableToken extends Contract {
       arg1: string,
       arg2: number | string
     ): TransactionObject<boolean>;
-
-    setNeedsRebase(): TransactionObject<void>;
-
-    setTotalSupply(value: number | string): TransactionObject<void>;
-
-    setTargetTotalSupply(value: number | string): TransactionObject<void>;
-
-    _needsRebase(): TransactionObject<boolean>;
-    decimals(): TransactionObject<BN>;
-    _totalSupply(): TransactionObject<BN>;
-    _targetTotalSupply(): TransactionObject<BN>;
-    needsRebase(): TransactionObject<boolean>;
-    totalSupply(): TransactionObject<BN>;
-    targetTotalSupply(): TransactionObject<BN>;
   };
   events: {
     allEvents: (

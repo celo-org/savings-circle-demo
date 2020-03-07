@@ -2,10 +2,16 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions, EventOptions } from "web3-eth-contract";
+import { Contract, ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { Callback, TransactionObject, ContractEvent } from "./types";
+import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+
+interface EventOptions {
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
+}
 
 export class ERC20 extends Contract {
   constructor(
@@ -13,15 +19,18 @@ export class ERC20 extends Contract {
     address?: string,
     options?: ContractOptions
   );
+  clone(): ERC20;
   methods: {
-    balanceOf(account: string): TransactionObject<BN>;
+    totalSupply(): TransactionObject<string>;
 
-    allowance(owner: string, spender: string): TransactionObject<BN>;
+    balanceOf(account: string): TransactionObject<string>;
 
     transfer(
       recipient: string,
       amount: number | string
     ): TransactionObject<boolean>;
+
+    allowance(owner: string, spender: string): TransactionObject<string>;
 
     approve(
       spender: string,
@@ -43,25 +52,23 @@ export class ERC20 extends Contract {
       spender: string,
       subtractedValue: number | string
     ): TransactionObject<boolean>;
-
-    totalSupply(): TransactionObject<BN>;
   };
   events: {
     Transfer: ContractEvent<{
       from: string;
       to: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     Approval: ContractEvent<{
       owner: string;
       spender: string;
-      value: BN;
+      value: string;
       0: string;
       1: string;
-      2: BN;
+      2: string;
     }>;
     allEvents: (
       options?: EventOptions,

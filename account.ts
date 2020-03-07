@@ -1,17 +1,19 @@
-import { RootState } from "./store";
-import { takeLeading, put } from "redux-saga/effects";
+import { fetchContacts, PhoneNumberMappingEntry } from "@celo/dappkit";
 import BigNumber from "bignumber.js";
-import { web3, kit } from "./root";
 import { Contact } from "expo-contacts";
 import { Dictionary } from "lodash";
-import { fetchContacts, PhoneNumberMappingEntry } from "@celo/dappkit";
+import { put, takeLeading } from "redux-saga/effects";
+import { kit } from "./root";
+import { RootState } from "./store";
 
+export type AddressMappingType = Dictionary<PhoneNumberMappingEntry>;
+export type ContactMappingType = { [id: string]: Contact };
 export interface State {
   address: string | undefined;
   stableBalance: string;
   goldBalance: string;
-  rawContacts: { [id: string]: Contact };
-  addressMapping: Dictionary<PhoneNumberMappingEntry>;
+  rawContacts: ContactMappingType;
+  addressMapping: AddressMappingType;
 }
 
 const INITIAL_STATE = {
@@ -125,23 +127,25 @@ export const reducer = (
         ...state,
         rawContacts: action.rawContacts,
         addressMapping: action.addressMapping
-      }
+      };
     default:
       return state;
   }
 };
 
 async function getBalances(address: string) {
-  const stableToken = await kit.contracts.getStableToken()
-  const goldToken = await kit.contracts.getGoldToken()
+  const stableToken = await kit.contracts.getStableToken();
+  const goldToken = await kit.contracts.getGoldToken();
   return Promise.all([
     stableToken.balanceOf(address),
     goldToken.balanceOf(address)
   ]);
 }
 
-export function prettyBalance(number: string) {
-  return new BigNumber(number).div("1000000000000000000").decimalPlaces(2, BigNumber.ROUND_DOWN)
+export function prettyBalance(number: string | number) {
+  return new BigNumber(number)
+    .div("1000000000000000000")
+    .decimalPlaces(2, BigNumber.ROUND_DOWN);
 }
 
 export function* refreshBalancesSaga(action: SetAccount | RefreshBalances) {
@@ -150,8 +154,8 @@ export function* refreshBalancesSaga(action: SetAccount | RefreshBalances) {
 }
 
 export function* fetchContactsSaga(action: GetContacts) {
-  const {rawContacts, phoneNumbersByAddress} = yield fetchContacts(kit);
-  yield put(setAddressMapping(rawContacts, phoneNumbersByAddress))
+  const { rawContacts, phoneNumbersByAddress } = yield fetchContacts(kit);
+  yield put(setAddressMapping(rawContacts, phoneNumbersByAddress));
 }
 
 export function* saga() {

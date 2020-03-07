@@ -1,24 +1,30 @@
+import { AsyncStorage } from "react-native";
 import {
-  createStore,
-  combineReducers,
-  Store,
   AnyAction,
-  applyMiddleware
+  applyMiddleware,
+  combineReducers,
+  createStore,
+  Store
 } from "redux";
-import { createMigrate, persistReducer, persistStore } from 'redux-persist'
-import { reducer as accountReducer, State as AccountState, saga as accountSaga } from "./account";
-import { reducer as savingsCircleReducer, State as SavingsCircleState, saga as savingsCircleSaga } from "./savingscircle";
-import storage from 'redux-persist/lib/storage'
+import { persistReducer, persistStore } from "redux-persist";
 import createSagaMiddleware from "redux-saga";
 import { spawn } from "redux-saga/effects";
-import Web3 from "web3";
-
+import {
+  reducer as accountReducer,
+  saga as accountSaga,
+  State as AccountState
+} from "./account";
+import {
+  reducer as savingsCircleReducer,
+  saga as savingsCircleSaga,
+  State as SavingsCircleState
+} from "./savingscircle";
 
 const persistConfig: any = {
-    key: 'root',
-    version: 0, // default is -1, increment as we make migrations
-    storage,
-  }
+  key: "root",
+  version: 0, // default is -1, increment as we make migrations
+  storage: AsyncStorage
+};
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -27,11 +33,11 @@ const reducer = combineReducers({
   savingsCircle: savingsCircleReducer
 });
 
-const persistedReducer = persistReducer(persistConfig, reducer)
+const persistedReducer = persistReducer(persistConfig, reducer);
 
 export function* rootSaga() {
-  yield spawn(accountSaga)
-  yield spawn(savingsCircleSaga)
+  yield spawn(accountSaga);
+  yield spawn(savingsCircleSaga);
 }
 
 const store: Store<RootState, AnyAction> = createStore(
@@ -40,14 +46,13 @@ const store: Store<RootState, AnyAction> = createStore(
   applyMiddleware(sagaMiddleware)
 );
 
-persistStore(store)
+persistStore(store);
 
 sagaMiddleware.run(rootSaga);
 
-
 export type RootState = {
   account: AccountState;
-  savingsCircle: SavingsCircleState
+  savingsCircle: SavingsCircleState;
 };
 
 export default store;
