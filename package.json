@@ -20,7 +20,7 @@
     "@expo/samples": "~3.0.3",
     "@expo/vector-icons": "^10.0.6",
     "@react-native-community/masked-view": "0.1.5",
-    "@react-navigation/bottom-tabs": "^5.0.0",
+    "@react-navigation/bottom-tabs": "^5.11.15",
     "@react-navigation/native": "^5.0.0",
     "@react-navigation/stack": "^5.0.0",
     "@react-navigation/web": "^1.0.0-alpha.9",
