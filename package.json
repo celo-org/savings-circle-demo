@@ -36,7 +36,7 @@
     "expo-permissions": "~8.0.0",
     "expo-web-browser": "~8.0.0",
     "https-browserify": "^1.0.0",
-    "libphonenumber-js": "^1.7.22",
+    "libphonenumber-js": "^1.9.42",
     "moment": "^2.24.0",
     "native-base": "^2.13.4",
     "node-libs-react-native": "^1.0.3",
